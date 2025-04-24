@@ -1,0 +1,44 @@
+name: Publish
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Deploy Update
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+
+      - name: Install dependencies 📦
+        run: |
+          npm install
+
+      - name: Build
+        run: |
+          npm run build
+      - uses: actions/configure-pages@v4
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Deploy 🚀
+        id: deployment
+        uses: actions/deploy-pages@v4
