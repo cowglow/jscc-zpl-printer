@@ -1,8 +1,7 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
-import { exec } from 'child_process';
+import {sendZPLToUSBPrinter} from "./src/send-zpl-to-usb-printer.ts";
 
-const PRINTER_NAME = "Intermec_PC43t_300_FP";
 const fastify = Fastify({logger: true});
 
 fastify.register(cors, {
@@ -13,30 +12,14 @@ fastify.get('/', async () => {
     return {status: 'Server is running!'};
 });
 
-const sendZPLToUSBPrinter = (printerName: string, zpl: string) => {
-    return new Promise<void>((resolve, reject) => {
-        // Escape double quotes in ZPL to avoid shell issues
-        const safeZPL = zpl.replace(/"/g, '\\"');
-        const cmd = `echo "${safeZPL}" | lp -d ${printerName} -o raw`;
-
-        exec(cmd, (error: any, _stdout: string, stderr: string) => {
-            if (error || stderr) {
-                reject(error || stderr);
-            } else {
-                resolve();
-            }
-        });
-    });
-};
-
 fastify.post('/print', async (request, reply) => {
-    const {zpl} = request.body as { zpl: string };
+    const {zpl, printerName} = request.body as { zpl: string, printerName: string };
     if (!zpl) {
         reply.status(400).send({error: 'ZPL string is required'});
         return;
     }
     try {
-        await sendZPLToUSBPrinter(PRINTER_NAME, zpl);
+        await sendZPLToUSBPrinter(printerName, zpl);
         reply.send({status: 'ZPL sent to printer'});
     } catch (error) {
         reply.status(500).send({error: 'Failed to send ZPL to printer', details: error});

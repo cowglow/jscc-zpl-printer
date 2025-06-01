@@ -31,7 +31,7 @@ body {
     max-width: 960px;
 }
 
-@media (min-width: 1200px){
+@media (min-width: 1200px) {
     body {
         flex-direction: row;
         align-items: center;
@@ -44,20 +44,22 @@ h1 {
 }
 
 button {
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-  transition: border-color 0.25s;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 0.25s;
 }
+
 button:hover {
-  background-color: #646cff;
+    background-color: #646cff;
     color: #fff;
 }
+
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+    outline: 4px auto -webkit-focus-ring-color;
 }
 
 div {
@@ -70,11 +72,13 @@ div {
 }
 
 label {
+    min-width: 125px;
+    text-align: right;
     font-weight: bold;
     text-transform: uppercase;
 }
 
-textarea {
+select, textarea {
     flex: 1;
     font-size: 1.48rem;
     width: 32rem;

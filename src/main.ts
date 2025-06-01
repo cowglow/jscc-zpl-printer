@@ -1,10 +1,12 @@
 import './style.css'
 import {rgbaToZ64} from 'zpl-image';
 import {convertTxtToZpl} from "./convert-txt-to-zpl.ts";
+import {createPrintCommand} from "./create-print-command.ts";
 
 const SERVER_IP = "http://localhost:9100"
 
 const fileInput = document.querySelector<HTMLInputElement>('#file-upload');
+const printerNameOptions = document.querySelector<HTMLSelectElement>('#printer-name');
 const textZplField = document.querySelector<HTMLTextAreaElement>("textarea#text-to-zpl")
 const zplTextField = document.querySelector<HTMLTextAreaElement>("textarea#zpl-to-print")
 
@@ -17,6 +19,7 @@ const resetButton = document.querySelector<HTMLButtonElement>("button#reset")
 // Event listeners
 if (
     fileInput &&
+    printerNameOptions &&
     textZplField &&
     convertToZPLButton &&
     zplTextField &&
@@ -69,15 +72,13 @@ if (
     })
     sendToPrinterButton.addEventListener("click", async () => {
         const zpl = convertTxtToZpl(textZplField.value.trim());
-
+        const printerName = printerNameOptions.value
         if (zpl !== "") {
             try {
                 const response = await fetch(`${SERVER_IP}/print`, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({zpl}),
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({zpl, printerName}),
                 });
 
                 if (response.ok) {
@@ -94,11 +95,10 @@ if (
         }
     });
     sendToTerminalButton.addEventListener("click", async () => {
-        const zpl = zplTextField.value.trim();
+        const zpl = convertTxtToZpl(textZplField.value.trim());
+        const printerName = printerNameOptions.value
         if (zpl === "") return;
-        // Escape double quotes in ZPL
-        const safeZPL = zpl.replace(/"/g, '\\"');
-        const cmd = `echo "${safeZPL}" | lp -d Intermec_PC43t_300_FP -o raw`;
+        const cmd = createPrintCommand(zpl, printerName);
         try {
             await navigator.clipboard.writeText(cmd);
             alert("Command copied to clipboard!");
@@ -110,9 +110,7 @@ if (
         const SERVER_STATUS_SUCCESS_MESSAGE = `✅ Server Status: `
         const SERVER_STATUS_ERROR_MESSAGE = "❌ Failed to verify connection"
         try {
-            const response = await fetch(SERVER_IP, {
-                method: "GET",
-            });
+            const response = await fetch(SERVER_IP, {method: "GET",});
 
             if (response.ok) {
                 const data = await response.json();
