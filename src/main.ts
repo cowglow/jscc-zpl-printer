@@ -1,31 +1,34 @@
 import './style.css'
 import {rgbaToZ64} from 'zpl-image';
-import {convertTxtToZpl} from "./convert-txt-to-zpl.ts";
+import {convertTxtToZpl} from "./utils/convert-txt-to-zpl.ts";
 
 const SERVER_IP = "http://localhost:9100"
 
-const fileInput = document.querySelector<HTMLInputElement>('#file-upload');
-const textZplField = document.querySelector<HTMLTextAreaElement>("textarea#text-to-zpl")
-const zplTextField = document.querySelector<HTMLTextAreaElement>("textarea#zpl-to-print")
+const fileUpload = document.querySelector<HTMLInputElement>('#file-upload');
+const textToZplField = document.querySelector<HTMLTextAreaElement>("textarea#text-to-zpl")
+const zplToPrintField = document.querySelector<HTMLTextAreaElement>("textarea#zpl-to-print")
 
 const convertToZPLButton = document.querySelector<HTMLButtonElement>("button#convert-to-zpl")
 const sendToPrinterButton = document.querySelector<HTMLButtonElement>("button#send-to-printer")
-const verifyConnectionButton = document.querySelector<HTMLButtonElement>("button#verify-connection")
-const sendToTerminalButton = document.querySelector<HTMLButtonElement>("button#send-to-terminal")
 const resetButton = document.querySelector<HTMLButtonElement>("button#reset")
+
+const sendToTerminalButton = document.querySelector<HTMLButtonElement>("button#send-to-terminal")
+const verifyConnectionButton = document.querySelector<HTMLButtonElement>("button#verify-connection")
+const participantLabelsButton = document.querySelector<HTMLButtonElement>("button#participant-labels")
 
 // Event listeners
 if (
-    fileInput &&
-    textZplField &&
+    fileUpload &&
+    textToZplField &&
+    zplToPrintField &&
     convertToZPLButton &&
-    zplTextField &&
     sendToPrinterButton &&
+    resetButton &&
     sendToTerminalButton &&
     verifyConnectionButton &&
-    resetButton
+    participantLabelsButton
 ) {
-    fileInput.addEventListener('change', (event) => {
+    fileUpload.addEventListener('change', (event) => {
         const file = (event.target as HTMLInputElement).files?.[0];
         if (file && file.type === 'image/png') {
             const reader = new FileReader();
@@ -45,7 +48,7 @@ if (
                             // Convert to ZPL using zpl-image
                             // @ts-ignore
                             const result = rgbaToZ64(rgba, width, {black: 50, rotate: 'N'});
-                            zplTextField.value = `^XA^FO0,0^GFA,${result.length},${result.length},${result.rowlen},${result.z64}^XZ`;
+                            zplToPrintField.value = `^XA^FO0,0^GFA,${result.length},${result.length},${result.rowlen},${result.z64}^XZ`;
                             sendToPrinterButton.removeAttribute("disabled");
                             sendToTerminalButton.removeAttribute("disabled");
                         }
@@ -61,14 +64,14 @@ if (
         }
     });
     convertToZPLButton.addEventListener("click", () => {
-        if (textZplField.value !== "") {
-            zplTextField.value = convertTxtToZpl(textZplField.value);
+        if (textToZplField.value !== "") {
+            zplToPrintField.value = convertTxtToZpl(textToZplField.value);
             sendToPrinterButton.removeAttribute("disabled");
             sendToTerminalButton.removeAttribute("disabled");
         }
     })
     sendToPrinterButton.addEventListener("click", async () => {
-        const zpl = convertTxtToZpl(textZplField.value.trim());
+        const zpl = convertTxtToZpl(textToZplField.value.trim());
 
         if (zpl !== "") {
             try {
@@ -93,8 +96,14 @@ if (
             }
         }
     });
+    resetButton.addEventListener("click", async (event) => {
+        event.preventDefault();
+        zplToPrintField.value = "";
+        sendToPrinterButton.setAttribute("disabled", "true");
+        sendToTerminalButton.setAttribute("disabled", "true");
+    })
     sendToTerminalButton.addEventListener("click", async () => {
-        const zpl = zplTextField.value.trim();
+        const zpl = zplToPrintField.value.trim();
         if (zpl === "") return;
         // Escape double quotes in ZPL
         const safeZPL = zpl.replace(/"/g, '\\"');
@@ -127,10 +136,17 @@ if (
             alert(`❌ Network error: ${err}`);
         }
     });
-    resetButton.addEventListener("click", async (event) => {
-        event.preventDefault();
-        zplTextField.value = "";
-        sendToPrinterButton.setAttribute("disabled", "true");
-        sendToTerminalButton.setAttribute("disabled", "true");
+    participantLabelsButton.addEventListener("click", async () => {
+        try {
+            const response = await fetch(`${SERVER_IP}/participants`, {
+                method: "GET´"
+            })
+            console.log("= METHOD ================")
+            console.log(await response.json());
+            console.log("=========================")
+        } catch (err) {
+            console.error(`❌ Endpoint error: ${err}`);
+            alert(`❌ Endpoint error: ${err}`);
+        }
     })
 }

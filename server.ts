@@ -1,6 +1,7 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
-import { exec } from 'child_process';
+import {exec} from 'child_process';
+import {loadParticipants} from "./src/utils/load-participants";
 
 const PRINTER_NAME = "Intermec_PC43t_300_FP";
 const fastify = Fastify({logger: true});
@@ -42,6 +43,16 @@ fastify.post('/print', async (request, reply) => {
         reply.status(500).send({error: 'Failed to send ZPL to printer', details: error});
     }
 });
+
+fastify.get("/participants", async (_request, reply) => {
+    try {
+        const participants = await loadParticipants();
+        console.log({participants})
+        reply.send({status: 'Printing participants labels for #JSCC25'});
+    } catch (error) {
+        reply.status(500).send({error: 'Failed to print participants data', details: error});
+    }
+})
 
 fastify.listen({port: 9100}).then(() => {
     console.log("==========================================================")
