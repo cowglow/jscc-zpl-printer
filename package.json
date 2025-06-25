@@ -14,15 +14,12 @@
     "@types/ws": "^8.18.1",
     "@types/zpl-image": "^0.1.0",
     "fastify": "^5.3.2",
+    "jsonc-parser": "^3.3.1",
     "net": "^1.0.2",
     "typescript": "~5.7.2",
     "vite": "^6.3.1",
     "vitest": "^3.2.4",
     "ws": "^8.18.1",
     "zpl-image": "^0.2.0"
-  },
-  "dependencies": {
-    "jsonc-parser": "^3.3.1",
-    "jszpl": "^1.1.8"
   }
 }

@@ -141,9 +141,7 @@ if (
             const response = await fetch(`${SERVER_IP}/participants`, {
                 method: "GET"
             })
-            console.log("= METHOD ================")
             console.log(await response.json());
-            console.log("=========================")
         } catch (err) {
             console.error(`❌ Endpoint error: ${err}`);
             alert(`❌ Endpoint error: ${err}`);

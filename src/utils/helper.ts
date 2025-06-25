@@ -13,6 +13,12 @@ export type Participant = {
     tags: string[];
 };
 
+export type LabelData = {
+    name: string;
+    company: string;
+    tags: string[];
+}
+
 export async function createParticipantFilePaths(directory: string): Promise<string[]> {
     const participantsDirectory = await readdir(directory, {withFileTypes: true, encoding: 'utf8'});
     const filteredParticipantsDirectory = participantsDirectory.filter((dirent) => dirent.isFile() && dirent.name.endsWith('.json') && !dirent.name.startsWith('_'))
@@ -24,7 +30,7 @@ export async function parseParticipantJson(filePath: string): Promise<Participan
     return parse(text);
 }
 
-export function createLabelDataFromParticipant(data: Participant) {
+export function createLabelDataFromParticipant(data: Participant): LabelData {
     return {
         name: `${data.realName.givenName}${!data.realName?.hideFamilyNameOnWebsite ? ` ${data.realName.familyName}` : ""}`,
         company: String(data.company),
