@@ -1,7 +1,7 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import {exec} from 'child_process';
-import {loadParticipants} from "./src/utils/load-participants";
+import {loadParticipants} from "./utils/load-participants.ts";
 
 const PRINTER_NAME = "Intermec_PC43t_300_FP";
 const fastify = Fastify({logger: true});
@@ -46,7 +46,7 @@ fastify.post('/print', async (request, reply) => {
 
 fastify.get("/participants", async (_request, reply) => {
     try {
-        const participants = await loadParticipants();
+        const participants = await loadParticipants("participants");
         console.log({participants})
         reply.send({status: 'Printing participants labels for #JSCC25'});
     } catch (error) {

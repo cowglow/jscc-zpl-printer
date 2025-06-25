@@ -139,7 +139,7 @@ if (
     participantLabelsButton.addEventListener("click", async () => {
         try {
             const response = await fetch(`${SERVER_IP}/participants`, {
-                method: "GET´"
+                method: "GET"
             })
             console.log("= METHOD ================")
             console.log(await response.json());

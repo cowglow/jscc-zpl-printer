@@ -7,8 +7,7 @@
     "dev": "vite --port 3000",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "server": "sudo node server.ts",
-    "strip": "strip-json-comments participants/*.json --replace"
+    "server": "sudo node src/server.ts"
   },
   "devDependencies": {
     "@fastify/cors": "^11.0.1",
@@ -23,6 +22,7 @@
     "zpl-image": "^0.2.0"
   },
   "dependencies": {
+    "jsonc-parser": "^3.3.1",
     "jszpl": "^1.1.8"
   }
 }
