@@ -11,16 +11,17 @@
 			name="viewport"
 			content="width=device-width, initial-scale=1.0"
 		/>
-		<title>Vite + TS</title>
+		<title>JSCC Participant Label Printer</title>
 	</head>
 	<body>
-		<h1>Print ZPL</h1>
 		<div style="flex-direction: column">
+			<h1>JSCC Participant Label</h1>
 			<div>
 				<label for="printer-name">Select Printer</label>
 				<select
 					id="printer-name"
 					name="printer-name"
+					aria-readonly="true"
 				>
 					<option value="Intermec_PC43t_300_FP">
 						Intermec_PC43t_300_FP
@@ -30,13 +31,13 @@
 					</option>
 				</select>
 			</div>
-
 			<div>
 				<label for="participant-name">Name</label>
 				<input
 					id="participant-name"
 					type="text"
-					value="Philip Saa"
+					placeholder="Full or Partial Name"
+					autofocus
 				/>
 			</div>
 			<div>
@@ -44,53 +45,16 @@
 				<input
 					id="company-name"
 					type="text"
-					value="Saab Deutschland GmbH"
+					placeholder="Optional"
 				/>
 			</div>
 			<div>
 				<label for="tag-list">Tags</label>
-				<textarea id="tag-list">HTML, CSS, JS</textarea>
+				<small id="tag-list-help" style="color: #555;">
+					Enter topics or ideas you would like to discuss or be asked about, separated by commas. (e.g., JavaScript, Web Design, AI)
+				</small>
+				<textarea id="tag-list" aria-describedby="tag-list-help" placeholder="HTML, CSS, JS"></textarea>
 			</div>
-
-			<!--<div>
-        <label for="file-upload">PNG to ZPL</label>
-        <input type="file" id="file-upload" accept="image/png"/>
-    </div>
-    <div>
-        <label for="printer-name">Select Printer</label>
-        <select id="printer-name" name="printer-name">
-            <option value="Intermec_PC43t_300_FP">Intermec_PC43t_300_FP</option>
-            <option value="Intermec PC43t (300 dpi)">Intermec PC43t (300 dpi)</option>
-        </select>
-    </div>
-    <div>
-        <label for="text-to-zpl">Text to ZPL</label>
-        <textarea id="text-to-zpl" name="text" placeholder="Enter Text...">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</textarea>
-    </div>
-    <div>
-        <label for="zpl-to-print">ZPL to Print</label>
-        <textarea id="zpl-to-print" rows="6"></textarea>
-    </div>
-    -->
-			<!-- <div style="display: flex">
-				<span style="display: flex; gap: 1rem">
-					<button id="convert-to-zpl">
-						Convert&nbsp;to&nbsp;ZPL
-					</button>
-					<button id="send-to-printer">
-						Send&nbsp;to&nbsp;Printer
-					</button>
-					<button id="send-to-terminal">
-						Send&nbsp;to&nbsp;Terminal
-					</button>
-				</span>
-				<span style="display: flex; flex-direction: column; gap: 1rem">
-					<button id="reset">Reset</button>
-					<button id="verify-connection">
-						Verify&nbsp;Connection
-					</button>
-				</span>
-			</div> -->
 			<div>
 				<button id="print-it">Print</button>
 			</div>
