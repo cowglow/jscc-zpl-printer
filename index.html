@@ -1,36 +1,58 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8"/>
-    <link rel="icon" type="image/svg+xml" href="/vite.svg"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Vite + TS</title>
-</head>
-<body>
-<h1>Print ZPL</h1>
-<div style="flex-direction: column">
-    <div>
-        <label for="printer-name">Select Printer</label>
-        <select id="printer-name" name="printer-name">
-            <option value="Intermec_PC43t_300_FP">Intermec_PC43t_300_FP</option>
-            <option value="Intermec PC43t (300 dpi)">Intermec PC43t (300 dpi)</option>
-        </select>
-    </div>
+	<head>
+		<meta charset="UTF-8" />
+		<link
+			rel="icon"
+			type="image/svg+xml"
+			href="/vite.svg"
+		/>
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
+		<title>Vite + TS</title>
+	</head>
+	<body>
+		<h1>Print ZPL</h1>
+		<div style="flex-direction: column">
+			<div>
+				<label for="printer-name">Select Printer</label>
+				<select
+					id="printer-name"
+					name="printer-name"
+				>
+					<option value="Intermec_PC43t_300_FP">
+						Intermec_PC43t_300_FP
+					</option>
+					<option value="Intermec PC43t (300 dpi)">
+						Intermec PC43t (300 dpi)
+					</option>
+				</select>
+			</div>
 
-    <div>
-        <label for="participant-name">Name</label>
-        <input id="participant-name" type="text" value="Philip Saa"/>
-    </div>
-    <div>
-        <label for="company-name">Company Name</label>
-        <input id="company-name" type="text" value="Saab Deutschland GmbH">
-    </div>
-    <div>
-        <label for="tag-list">Tags</label>
-        <textarea id="tag-list">HTML, CSS, JS</textarea>
-    </div>
+			<div>
+				<label for="participant-name">Name</label>
+				<input
+					id="participant-name"
+					type="text"
+					value="Philip Saa"
+				/>
+			</div>
+			<div>
+				<label for="company-name">Company Name</label>
+				<input
+					id="company-name"
+					type="text"
+					value="Saab Deutschland GmbH"
+				/>
+			</div>
+			<div>
+				<label for="tag-list">Tags</label>
+				<textarea id="tag-list">HTML, CSS, JS</textarea>
+			</div>
 
-    <!--<div>
+			<!--<div>
         <label for="file-upload">PNG to ZPL</label>
         <input type="file" id="file-upload" accept="image/png"/>
     </div>
@@ -50,21 +72,32 @@
         <textarea id="zpl-to-print" rows="6"></textarea>
     </div>
     -->
-    <div style="display: flex;">
-        <span style="display: flex; gap:1rem;">
-            <!--<button id="convert-to-zpl">Convert&nbsp;to&nbsp;ZPL</button>-->
-            <button id="send-to-printer">Send&nbsp;to&nbsp;Printer</button>
-            <button id="send-to-terminal">Send&nbsp;to&nbsp;Terminal</button>
-        </span>
-        <span style="display: flex;flex-direction: column; gap:1rem;">
-            <!--<button id="reset">Reset</button>-->
-            <button id="verify-connection">Verify&nbsp;Connection</button>
-        </span>
-    </div>
-    <div>
-        <button id="print-it">Print</button>
-    </div>
-</div>
-<script type="module" src="/src/main.ts"></script>
-</body>
+			<!-- <div style="display: flex">
+				<span style="display: flex; gap: 1rem">
+					<button id="convert-to-zpl">
+						Convert&nbsp;to&nbsp;ZPL
+					</button>
+					<button id="send-to-printer">
+						Send&nbsp;to&nbsp;Printer
+					</button>
+					<button id="send-to-terminal">
+						Send&nbsp;to&nbsp;Terminal
+					</button>
+				</span>
+				<span style="display: flex; flex-direction: column; gap: 1rem">
+					<button id="reset">Reset</button>
+					<button id="verify-connection">
+						Verify&nbsp;Connection
+					</button>
+				</span>
+			</div> -->
+			<div>
+				<button id="print-it">Print</button>
+			</div>
+		</div>
+		<script
+			type="module"
+			src="/src/main.ts"
+		></script>
+	</body>
 </html>
