@@ -2,6 +2,7 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import {sendZPLToUSBPrinter} from "./src/send-zpl-to-usb-printer.ts";
 
+
 const fastify = Fastify({logger: true});
 
 fastify.register(cors, {

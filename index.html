@@ -10,6 +10,27 @@
 <h1>Print ZPL</h1>
 <div style="flex-direction: column">
     <div>
+        <label for="printer-name">Select Printer</label>
+        <select id="printer-name" name="printer-name">
+            <option value="Intermec_PC43t_300_FP">Intermec_PC43t_300_FP</option>
+            <option value="Intermec PC43t (300 dpi)">Intermec PC43t (300 dpi)</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="participant-name">Name</label>
+        <input id="participant-name" type="text" value="Philip Saa"/>
+    </div>
+    <div>
+        <label for="company-name">Company Name</label>
+        <input id="company-name" type="text" value="Saab Deutschland GmbH">
+    </div>
+    <div>
+        <label for="tag-list">Tags</label>
+        <textarea id="tag-list">HTML, CSS, JS</textarea>
+    </div>
+
+    <!--<div>
         <label for="file-upload">PNG to ZPL</label>
         <input type="file" id="file-upload" accept="image/png"/>
     </div>
@@ -38,6 +59,10 @@
             <button id="reset">Reset</button>
             <button id="verify-connection">Verify&nbsp;Connection</button>
         </span>
+    </div>
+    -->
+    <div>
+        <button id="print-it">Print</button>
     </div>
 </div>
 <script type="module" src="/src/main.ts"></script>
