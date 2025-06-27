@@ -38,11 +38,17 @@ fastify.post('/print', async (request, reply) => {
     }
 });
 
-fastify.listen({port: 9100}).then(() => {
-    console.log("==========================================================")
-    console.log("= 🚀 Fastify server started on http://localhost:9100     =");
-    console.log("==========================================================")
-});
+try {
+    await fastify.listen({port: 9100, host: '0.0.0.0'})
+} catch (err) {
+    fastify.log.error(err);
+    process.exit(1);
+}
+// fastify.listen({port: 9100}).then(() => {
+//     console.log("==========================================================")
+//     console.log("= 🚀 Fastify server started on http://localhost:9100     =");
+//     console.log("==========================================================")
+// });
 
 // Example command to send ZPL to a printer from Mac (nc):
 // echo "^XA^FO10,100^A0,N,136,136^FD#JSCC25^FS^FO100,240^A0,N,100,100^FDPHILIP SAA^FS^XZ" | nc 192.168.1.16 9100
