@@ -154,33 +154,30 @@ if (
         sendToTerminalButton.setAttribute("disabled", "true");
     })
     */
-    printItButton.addEventListener("click", async (event) => {
-        event.preventDefault()
+    printItButton.addEventListener("click", async () => {
+        const printerName = printerNameOptions.value
         const zpl = generateZPL({
             name: participantName.value,
             company: companyName.value,
             tags: tagList.value.split(",")
         })
-        const printerName = printerNameOptions.value
-        if (zpl !== "") {
-            try {
-                const response = await fetch(`${SERVER_IP}/print`, {
-                    method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({zpl, printerName}),
-                });
+        try {
+            const response = await fetch(`${SERVER_IP}/print`, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({zpl, printerName}),
+            });
 
-                if (response.ok) {
-                    console.log("✅ ZPL sent successfully!");
-                } else {
-                    const error = await response.json();
-                    console.error("❌ Failed to send ZPL:", error);
-                    alert(`Error: ${error.error || "Failed to send ZPL"}`);
-                }
-            } catch (err) {
-                console.error("❌ Network error:", err);
-                alert("Network error. Could not send ZPL.");
+            if (response.ok) {
+                console.log("✅ ZPL sent successfully!");
+            } else {
+                const error = await response.json();
+                console.error("❌ Failed to send ZPL:", error);
+                alert(`Error: ${error.error || "Failed to send ZPL"}`);
             }
+        } catch (err) {
+            console.error("❌ Network error:", err);
+            alert("Network error. Could not send ZPL.");
         }
     })
 }

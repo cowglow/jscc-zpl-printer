@@ -21,6 +21,7 @@
     "zpl-image": "^0.2.0"
   },
   "dependencies": {
+    "@types/node": "^24.0.4",
     "jszpl": "^1.1.8"
   }
 }
