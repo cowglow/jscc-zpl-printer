@@ -1,7 +1,8 @@
 import './style.css'
 // import {rgbaToZ64} from 'zpl-image';
 // import {convertTxtToZpl} from "./convert-txt-to-zpl.ts";
-// import {createPrintCommand} from "./create-print-command.ts";
+import {createPrintCommand} from "./create-print-command.ts";
+import {generateZPL} from "./lib/generate-jscc-zpl.ts";
 
 const SERVER_IP = "http://localhost:9100"
 
@@ -11,9 +12,9 @@ const printerNameOptions = document.querySelector<HTMLSelectElement>('#printer-n
 // const zplTextField = document.querySelector<HTMLTextAreaElement>("textarea#zpl-to-print")
 //
 // const convertToZPLButton = document.querySelector<HTMLButtonElement>("button#convert-to-zpl")
-// const sendToPrinterButton = document.querySelector<HTMLButtonElement>("button#send-to-printer")
-// const verifyConnectionButton = document.querySelector<HTMLButtonElement>("button#verify-connection")
-// const sendToTerminalButton = document.querySelector<HTMLButtonElement>("button#send-to-terminal")
+const sendToPrinterButton = document.querySelector<HTMLButtonElement>("button#send-to-printer")
+const sendToTerminalButton = document.querySelector<HTMLButtonElement>("button#send-to-terminal")
+const verifyConnectionButton = document.querySelector<HTMLButtonElement>("button#verify-connection")
 // const resetButton = document.querySelector<HTMLButtonElement>("button#reset")
 // JSCC Modifications
 const participantName = document.querySelector<HTMLInputElement>("#participant-name")
@@ -28,9 +29,9 @@ if (
     // textZplField &&
     // convertToZPLButton &&
     // zplTextField &&
-    // sendToPrinterButton &&
-    // sendToTerminalButton &&
-    // verifyConnectionButton &&
+    sendToPrinterButton &&
+    sendToTerminalButton &&
+    verifyConnectionButton &&
     // resetButton &&
     participantName &&
     companyName &&
@@ -80,8 +81,13 @@ if (
             sendToTerminalButton.removeAttribute("disabled");
         }
     })
+     */
     sendToPrinterButton.addEventListener("click", async () => {
-        const zpl = convertTxtToZpl(textZplField.value.trim());
+        const zpl = generateZPL({
+            name: participantName.value,
+            company: companyName.value,
+            tags: tagList.value.split(",")
+        })
         const printerName = printerNameOptions.value
         if (zpl !== "") {
             try {
@@ -104,8 +110,13 @@ if (
             }
         }
     });
+
     sendToTerminalButton.addEventListener("click", async () => {
-        const zpl = convertTxtToZpl(textZplField.value.trim());
+        const zpl = generateZPL({
+            name: participantName.value,
+            company: companyName.value,
+            tags: tagList.value.split(",")
+        })
         const printerName = printerNameOptions.value
         if (zpl === "") return;
         const cmd = createPrintCommand(zpl, printerName);
@@ -135,6 +146,7 @@ if (
             alert(`❌ Network error: ${err}`);
         }
     });
+    /*
     resetButton.addEventListener("click", async (event) => {
         event.preventDefault();
         zplTextField.value = "";
@@ -171,37 +183,4 @@ if (
             }
         }
     })
-}
-type LabelData = {
-    name: string;
-    company: string;
-    tags: string[];
-};
-
-function generateZPL(labelData: LabelData): string {
-    const {name, company, tags} = labelData;
-    const tagsLine = tags.join(", ");
-
-    return `
-^XA
-^CI28
-
-^FO50,30^XGLOGO.GRF,1,1^FS
-
-^CF0,120
-^FO50,75^FD${name}^FS
-
-^CF0,100
-^FO50,225^FD${company}^FS
-
-^CF0,60
-^FO50,345
-^FB1100,4,0,L,0
-^FD${tagsLine}^FS
-
-^CF0,150
-^FO533,741^FD#jscc25^FS
-
-^XZ
-`.trim();
 }
