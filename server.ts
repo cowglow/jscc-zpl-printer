@@ -1,16 +1,27 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import {sendZPLToUSBPrinter} from "./src/send-zpl-to-usb-printer.ts";
+import {fileURLToPath} from "node:url";
+import path from "node:path";
+import fastifyStatic from "@fastify/static";
 
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const fastify = Fastify({logger: true});
 
+fastify.register(fastifyStatic, {
+    root: path.join(__dirname, "dist"),
+    prefix: "/ts-print-zpl-via-socket/"
+})
 fastify.register(cors, {
-    origin: "http://localhost:3000",
+    origin: true,
 });
 
-fastify.get('/', async () => {
-    return {status: 'Server is running!'};
+fastify.get('/', async (_, reply) => {
+    return reply.sendFile("index.html")
+    // return {status: 'Server is running!'};
 });
 
 fastify.post('/print', async (request, reply) => {
