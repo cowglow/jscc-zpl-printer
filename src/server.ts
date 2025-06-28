@@ -1,10 +1,9 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
-import {sendZPLToUSBPrinter} from "./src/send-zpl-to-usb-printer.ts";
+import {sendZPLToUSBPrinter} from "./send-zpl-to-usb-printer.ts";
 import {fileURLToPath} from "node:url";
 import path from "node:path";
 import fastifyStatic from "@fastify/static";
-import {exec} from 'child_process';
 import {loadParticipants} from "./utils/load-participants.ts";
 import {createLabelZPL} from "./utils/createLabelZPL.ts";
 
@@ -25,21 +24,6 @@ fastify.get('/', async (_, reply) => {
     // return {status: 'Server is running!'};
 });
 
-const sendZPLToUSBPrinter = (printerName: string, zpl: string) => {
-    return new Promise<void>((resolve, reject) => {
-        // Escape double quotes in ZPL to avoid shell issues
-        const safeZPL = zpl.replace(/"/g, '\\"');
-        const cmd = `echo "${safeZPL}" | lp -d ${printerName} -o raw`;
-
-        exec(cmd, (error: any, _stdout: string, stderr: string) => {
-            if (error || stderr) {
-                reject(error || stderr);
-            } else {
-                resolve();
-            }
-        });
-    });
-};
 
 fastify.post('/print', async (request, reply) => {
     const {zpl, printerName} = request.body as { zpl: string, printerName: string };
