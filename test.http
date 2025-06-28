@@ -1,0 +1,8 @@
+### GET request to example server
+POST http://localhost:9100/print
+Content-Type: application/json
+
+{
+  "zpl": "^XA^FO100,100^A0N,50,50^FDPrinted via WebStorm!^FS^XZ",
+  "printerName": "Intermec PC43t (300 dpi)"
+}
