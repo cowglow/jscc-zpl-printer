@@ -1,67 +1,81 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<link
-			rel="icon"
-			type="image/svg+xml"
-			href="/vite.svg"
-		/>
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1.0"
-		/>
-		<title>JSCC Participant Label Printer</title>
-	</head>
-	<body>
-		<div style="flex-direction: column">
-			<h1>JSCC Participant Label</h1>
-			<div>
-				<label for="printer-name">Select Printer</label>
-				<select
-					id="printer-name"
-					name="printer-name"
-					aria-readonly="true"
-				>
-					<option value="Intermec_PC43t_300_FP">
-						Intermec_PC43t_300_FP
-					</option>
-					<option value="Intermec PC43t (300 dpi)">
-						Intermec PC43t (300 dpi)
-					</option>
-				</select>
-			</div>
-			<div>
-				<label for="participant-name">Name</label>
-				<input
-					id="participant-name"
-					type="text"
-					placeholder="Full or Partial Name"
-					autofocus
-				/>
-			</div>
-			<div>
-				<label for="company-name">Company Name</label>
-				<input
-					id="company-name"
-					type="text"
-					placeholder="Optional"
-				/>
-			</div>
-			<div>
-				<label for="tag-list">Tags</label>
-				<small id="tag-list-help" style="color: #555;">
-					Enter topics or ideas you would like to discuss or be asked about, separated by commas. (e.g., JavaScript, Web Design, AI)
-				</small>
-				<textarea id="tag-list" aria-describedby="tag-list-help" placeholder="HTML, CSS, JS"></textarea>
-			</div>
-			<div>
-				<button id="print-it">Print</button>
-			</div>
-		</div>
-		<script
-			type="module"
-			src="/src/main.ts"
-		></script>
-	</body>
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="icon" type="image/svg+xml" href="/vite.svg"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Vite + TS</title>
+</head>
+<body>
+<h1>Print ZPL</h1>
+<div style="flex-direction: column">
+<!--    Old -->
+    <div>
+        <label for="file-upload">PNG to ZPL</label>
+        <input type="file" id="file-upload" accept="image/png"/>
+    </div>
+    <div>
+        <label for="text-to-zpl">Text to ZPL</label>
+        <textarea id="text-to-zpl" name="text" placeholder="Enter Text...">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</textarea>
+    </div>
+    <div>
+        <label for="zpl-to-print">ZPL to Print</label>
+        <textarea id="zpl-to-print" rows="6"></textarea>
+    </div>
+    <div style="display: flex; justify-content: flex-end">
+        <button id="convert-to-zpl">Convert&nbsp;to&nbsp;ZPL</button>
+        <button id="send-to-printer" disabled>Send&nbsp;to&nbsp;Printer</button>
+        <button id="reset">Reset</button>
+    </div>
+    <div style="display: flex;">
+        <button id="verify-connection">Verify&nbsp;Connection</button>
+        <button id="send-to-terminal" disabled>Send&nbsp;to&nbsp;Terminal</button>
+        <button id="participant-labels">Participant&nbsp;Labels</button>
+    </div>
+<!--    NEW -->
+    <div>
+        <label for="printer-name">Select Printer</label>
+        <select
+                id="printer-name"
+                name="printer-name"
+                aria-readonly="true"
+        >
+            <option value="Intermec_PC43t_300_FP">
+                Intermec_PC43t_300_FP
+            </option>
+            <option value="Intermec PC43t (300 dpi)">
+                Intermec PC43t (300 dpi)
+            </option>
+        </select>
+    </div>
+    <div>
+        <label for="participant-name">Name</label>
+        <input
+                id="participant-name"
+                type="text"
+                placeholder="Full or Partial Name"
+                autofocus
+        />
+    </div>
+    <div>
+        <label for="company-name">Company Name</label>
+        <input
+                id="company-name"
+                type="text"
+                placeholder="Optional"
+        />
+    </div>
+    <div>
+        <label for="tag-list">Tags</label>
+        <small id="tag-list-help" style="color: #555;">
+            Enter topics or ideas you would like to discuss or be asked about, separated by commas. (e.g., JavaScript, Web Design, AI)
+        </small>
+        <textarea id="tag-list" aria-describedby="tag-list-help" placeholder="HTML, CSS, JS"></textarea>
+    </div>
+    <div>
+        <button id="print-it">Print</button>
+    </div>
+</div>
+<script type="module" src="/src/main.ts"></script>
+</body>
 </html>

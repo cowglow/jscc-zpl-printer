@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 3000 --host",
+    "dev": "vite --port 3000",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "server": "node server.ts"
+    "server": "node src/server.ts"
   },
   "devDependencies": {
     "@fastify/cors": "^11.0.1",
@@ -18,11 +18,11 @@
     "net": "^1.0.2",
     "typescript": "~5.7.2",
     "vite": "^6.3.1",
+    "vitest": "^3.2.4",
     "ws": "^8.18.1",
     "zpl-image": "^0.2.0"
   },
   "dependencies": {
-    "@types/node": "^24.0.4",
-    "jszpl": "^1.1.8"
+    "@types/node": "^24.0.4"
   }
 }

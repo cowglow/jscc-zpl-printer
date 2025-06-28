@@ -1,14 +1,14 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
-import {sendZPLToUSBPrinter} from "./src/send-zpl-to-usb-printer.ts";
+import {sendZPLToUSBPrinter} from "./send-zpl-to-usb-printer.ts";
 import {fileURLToPath} from "node:url";
 import path from "node:path";
 import fastifyStatic from "@fastify/static";
-
+import {loadParticipants} from "./utils/load-participants.ts";
+import {createLabelZPL} from "./utils/createLabelZPL.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 const fastify = Fastify({logger: true});
 
 fastify.register(fastifyStatic, {
@@ -24,6 +24,7 @@ fastify.get('/', async (_, reply) => {
     // return {status: 'Server is running!'};
 });
 
+
 fastify.post('/print', async (request, reply) => {
     const {zpl, printerName} = request.body as { zpl: string, printerName: string };
     if (!zpl) {
@@ -38,18 +39,28 @@ fastify.post('/print', async (request, reply) => {
     }
 });
 
+fastify.get("/participants", async (request, reply) => {
+    const {printerName} = request.body as { zpl: string, printerName: string };
+
+    try {
+        const participants = await loadParticipants("participants");
+        for (const participant of participants) {
+            const zpl = createLabelZPL(participant)
+            await sendZPLToUSBPrinter(printerName, zpl);
+        }
+        reply.send({status: 'Printing participants labels for #JSCC25'});
+    } catch (error) {
+        reply.status(500).send({error: 'Failed to print participants data', details: error});
+    }
+})
+
 try {
     await fastify.listen({port: 9100, host: '0.0.0.0'})
+    console.log("🚀 Fastify server started on http://localhost:9100");
 } catch (err) {
     fastify.log.error(err);
     process.exit(1);
 }
-// fastify.listen({port: 9100}).then(() => {
-//     console.log("==========================================================")
-//     console.log("= 🚀 Fastify server started on http://localhost:9100     =");
-//     console.log("==========================================================")
-// });
-
 // Example command to send ZPL to a printer from Mac (nc):
 // echo "^XA^FO10,100^A0,N,136,136^FD#JSCC25^FS^FO100,240^A0,N,100,100^FDPHILIP SAA^FS^XZ" | nc 192.168.1.16 9100
 

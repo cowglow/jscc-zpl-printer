@@ -67,7 +67,7 @@ if (
                             // Convert to ZPL using zpl-image
                             // @ts-ignore
                             const result = rgbaToZ64(rgba, width, {black: 50, rotate: 'N'});
-                            zplTextField.value = `^XA^FO0,0^GFA,${result.length},${result.length},${result.rowlen},${result.z64}^XZ`;
+                            zplToPrintField.value = `^XA^FO0,0^GFA,${result.length},${result.length},${result.rowlen},${result.z64}^XZ`;
                             sendToPrinterButton.removeAttribute("disabled");
                             sendToTerminalButton.removeAttribute("disabled");
                         }
@@ -83,13 +83,13 @@ if (
         }
     });
     convertToZPLButton.addEventListener("click", () => {
-        if (textZplField.value !== "") {
-            zplTextField.value = convertTxtToZpl(textZplField.value);
+        if (textToZplField.value !== "") {
+            zplToPrintField.value = convertTxtToZpl(textToZplField.value);
             sendToPrinterButton.removeAttribute("disabled");
             sendToTerminalButton.removeAttribute("disabled");
         }
     })
-     
+
 	sendToPrinterButton.addEventListener('click', async () => {
 		const zpl = generateZPL({
 			name: participantName.value,
@@ -160,6 +160,29 @@ if (
         zplTextField.value = "";
         sendToPrinterButton.setAttribute("disabled", "true");
         sendToTerminalButton.setAttribute("disabled", "true");
+            if (response.ok) {
+                const data = await response.json();
+                console.log(SERVER_STATUS_SUCCESS_MESSAGE + data.status);
+                alert(SERVER_STATUS_SUCCESS_MESSAGE + data.status);
+            } else {
+                console.error(SERVER_STATUS_ERROR_MESSAGE);
+                alert(SERVER_STATUS_ERROR_MESSAGE);
+            }
+        } catch (err) {
+            console.error(`❌ Network error: ${err}`);
+            alert(`❌ Network error: ${err}`);
+        }
+    });
+    participantLabelsButton.addEventListener("click", async () => {
+        try {
+            const response = await fetch(`${SERVER_IP}/participants`, {
+                method: "GET"
+            })
+            console.log(await response.json());
+        } catch (err) {
+            console.error(`❌ Endpoint error: ${err}`);
+            alert(`❌ Endpoint error: ${err}`);
+        }
     })
     */
 	printItButton.addEventListener('click', async () => {
