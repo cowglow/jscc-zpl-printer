@@ -178,6 +178,7 @@ if (
 
 			if (response.ok) {
 				console.log('✅ ZPL sent successfully!');
+				alert('✅ ZPL sent successfully!');
 			} else {
 				const error = await response.json();
 				console.error('❌ Failed to send ZPL:', error);
