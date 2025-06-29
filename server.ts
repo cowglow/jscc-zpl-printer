@@ -12,7 +12,7 @@ const fastify = Fastify({logger: true});
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-fastify.register(fastifyStatic, {root: path.join(__dirname, "dist"), prefix: "/ts-print-zpl-via-socket/"});
+fastify.register(fastifyStatic, {root: path.join(__dirname, "dist"), prefix: "/jscc-zpl-image/"});
 fastify.register(cors, {origin: true});
 
 fastify.get(ROUTES.ROOT, async (_, reply) =>
