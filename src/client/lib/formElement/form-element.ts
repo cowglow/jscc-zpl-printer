@@ -11,7 +11,7 @@ if (formElement) {
             company: String(data.companyName),
             tags: String(data.tagList).split(','),
         });
-        const printerName = formData.get('printer-name') as string
+        const printerName = String(data.printerName);
         try {
             console.log({zpl, printerName})
             const response = await fetch(`/print`, {
