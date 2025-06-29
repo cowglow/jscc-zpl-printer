@@ -7,22 +7,21 @@
     "dev": "vite --port 3000",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "server": "node src/server.ts"
+    "server": "node server.ts"
   },
   "devDependencies": {
     "@fastify/cors": "^11.0.1",
     "@fastify/static": "^8.2.0",
+    "@types/node": "^24.0.7",
     "@types/ws": "^8.18.1",
     "@types/zpl-image": "^0.1.0",
     "fastify": "^5.3.2",
+    "jsonc-parser": "^3.3.1",
     "net": "^1.0.2",
     "typescript": "~5.7.2",
     "vite": "^6.3.1",
     "vitest": "^3.2.4",
     "ws": "^8.18.1",
     "zpl-image": "^0.2.0"
-  },
-  "dependencies": {
-    "@types/node": "^24.0.4"
   }
 }

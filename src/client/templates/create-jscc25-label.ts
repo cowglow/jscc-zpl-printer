@@ -1,6 +1,6 @@
-import {type LabelData} from "./helper.ts";
+import {type LabelData} from "../../../server/utils/helper.ts";
 
-export function createLabelZPL(data: LabelData) {
+export function createJSCC25Label(data: LabelData) {
     const {name, company, tags} = data;
     const tagsLine = tags.join(", ");
 
