@@ -11,9 +11,8 @@ if (formElement) {
             company: String(data.companyName),
             tags: String(data.tagList).split(','),
         });
-        const printerName = String(data.printerName);
+        const printerName = String(import.meta.env.VITE_PRINTER_NAME || data.printerName);
         try {
-            console.log({zpl, printerName})
             const response = await fetch(`/print`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
