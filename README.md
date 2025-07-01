@@ -8,7 +8,13 @@ During one of the early Orga meetings of JSCC, I suggested that we could print t
 I didn't even know how to use it. The process of making it work went like this:
 
 Ethernet cable. The printer gets and IP to see what you can do what you get via the web interface.
-You can send ZPL commands via the terminal. I still didn't know ZPL.
+You can send ZPL commands via the terminal. I didn't event know ZPL.
+
+Anyway, after some tinkering, I managed to get it working. Leo came up with the idea of running it on the network. And Patrick helped with the computer and on the fly code changes.
+
+V1 Looks like this:
+
+![client-screenshot.png](public/client-screenshot.png)
 
 ## Example ZPL Code:
 Example command to send ZPL to a printer from Mac (nc):
