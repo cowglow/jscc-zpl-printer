@@ -16,6 +16,7 @@ V1 Looks like this:
 
 ![client-screenshot.png](public/client-screenshot.png)
 
+Currently the printer only work on a macOS. But a windows version is coming soon.
 ## Example ZPL Code:
 Example command to send ZPL to a printer from Mac (nc):
 ```
