@@ -1,4 +1,4 @@
-import {createJSCC25Label} from "../../templates/create-jscc25-label.ts";
+import {createJSCC25Label} from "../../zpl-templates/create-jscc25-label.ts";
 
 const formElement = document.querySelector<HTMLFormElement>('#form');
 if (formElement) {

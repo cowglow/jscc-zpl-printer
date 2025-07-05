@@ -1,6 +1,6 @@
 import type {FastifyReply, FastifyRequest, RequestGenericInterface} from "fastify";
 import {loadParticipants} from "../utils/load-participants.ts";
-import {createJSCC25Label} from "../../src/client/templates/create-jscc25-label.ts";
+import {createJSCC25Label} from "../../src/client/zpl-templates/create-jscc25-label.ts";
 import {sendZPLToUSBPrinter} from "../utils/helper.ts";
 
 type ParticipantRequest = RequestGenericInterface & {

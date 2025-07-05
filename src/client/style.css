@@ -32,6 +32,16 @@ body > div {
     box-sizing: border-box;
 }
 
+nav {
+    border: thin solid black;
+    background-color: white;
+    padding: 10px;
+    margin: 0 0 5px 0;
+    display: flex;
+    gap: 10px;
+    justify-content: space-around;
+}
+
 h1 {
     font-size: clamp(2rem, 8vw, 4rem);
     line-height: 1.1;
@@ -42,7 +52,7 @@ h1 {
     text-transform: uppercase;
 }
 
-div {
+#app div {
     border: 1px solid black;
     display: flex;
     flex-direction: column;
