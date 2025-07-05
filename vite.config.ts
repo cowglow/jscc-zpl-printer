@@ -1,5 +1,5 @@
 import {defineConfig} from "vite";
 
 export default defineConfig({
-    base: "/jscc-zpl-image",
+    base: "/jscc-zpl-printer",
 })
