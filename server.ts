@@ -7,6 +7,7 @@ import {ROUTES, SERVER_HOST, SERVER_PORT, SERVER_RUNNING_MESSAGE} from "./server
 import {participants} from "./server/api/participants.ts";
 import {print} from "./server/api/print.ts";
 import {testPrinterConnection} from "./server/api/test-printer.ts";
+import {serverInfo} from "./server/api/server-info.ts";
 
 const fastify = Fastify({logger: true});
 
@@ -22,6 +23,7 @@ fastify.get(ROUTES.ROOT, async (_, reply) =>
 fastify.post(ROUTES.PARTICIPANTS, participants);
 fastify.post(ROUTES.PRINT, print);
 fastify.post(ROUTES.TEST_PRINTER, testPrinterConnection);
+fastify.get(ROUTES.SERVER_INFO, serverInfo);
 
 try {
     await fastify.listen({port: SERVER_PORT, host: SERVER_HOST})

@@ -7,9 +7,20 @@
     <title>JSCC Participant Label Printer</title>
 </head>
 <body>
+<button id="open-admin">⚙ Admin</button>
+
+<dialog id="admin-dialog">
+    <h2>Admin Actions</h2>
+    <button id="participant-labels">Print&nbsp;All&nbsp;Participants</button>
+    <button id="test-printer-connection">Test&nbsp;Printer&nbsp;Connection</button>
+    <button id="print-client-qr">Print&nbsp;WebClient&nbsp;QR</button>
+    <button id="close-admin">Close</button>
+</dialog>
+
 <form id="form" method="post">
     <div style="flex-direction: column">
-        <h1>JSCC Participant Label Printer</h1>
+        <img src="/jscc-og-image.png" alt="JSCC" style="width: 100%; max-width: 600px;" />
+        <h1>#JSCC26 Participant Label Printer</h1>
         <div class="feature-block">
             <label for="printer-name">Select Printer</label>
             <select
@@ -82,13 +93,6 @@
         </div>
         <div>
             <button id="-print-it" type="submit">Print</button>
-<!-- TO HIDE: style="display: none;" -->
-            <section style="display: flex; flex-direction: column;">
-                <h2>Admin Actions</h2>
-                <button id="participant-labels" type="button">Print&nbsp;All&nbsp;Participants</button>
-                <button id="test-printer-connection">Test&nbsp;Printer&nbsp;Connection</button>
-                <button id="print-client-qr">Print&nbsp;WebClient&nbsp;QR&nbsp;</button>
-            </section>
         </div>
     </div>
 </form>

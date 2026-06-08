@@ -1,4 +1,5 @@
-import {createJSCC25Label} from "../../templates/create-jscc25-label.ts";
+import {createJSCCLabel} from "../../templates/create-jscc-label.ts";
+import {createQRLabel} from "../../templates/create-qr-label.ts";
 
 const participantLabelsButton = document.querySelector<HTMLButtonElement>('#participant-labels');
 if (participantLabelsButton) {
@@ -23,6 +24,42 @@ if (participantLabelsButton) {
         } catch (err) {
             console.error('❌ Network error:', err);
             alert('Network error. Could not print participants.');
+        }
+    });
+}
+
+const adminDialog = document.querySelector<HTMLDialogElement>('#admin-dialog');
+document.querySelector('#open-admin')?.addEventListener('click', () => adminDialog?.showModal());
+document.querySelector('#close-admin')?.addEventListener('click', () => adminDialog?.close());
+adminDialog?.addEventListener('click', (event) => {
+    if (event.target === adminDialog) adminDialog.close();
+});
+
+const printQrButton = document.querySelector<HTMLButtonElement>('#print-client-qr');
+if (printQrButton) {
+    printQrButton.addEventListener('click', async (event) => {
+        event.preventDefault();
+        const printerName = String(
+            import.meta.env.VITE_PRINTER_NAME ||
+            document.querySelector<HTMLSelectElement>('#printer-name')?.value
+        );
+        const {url} = await fetch('/server-info').then(r => r.json());
+        const zpl = createQRLabel(url);
+        try {
+            const response = await fetch('/print', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({zpl, printerName}),
+            });
+            if (response.ok) {
+                alert('✅ QR code label sent to printer!');
+            } else {
+                const error = await response.json();
+                alert(`Error: ${error.error || 'Failed to print QR code'}`);
+            }
+        } catch (err) {
+            console.error('❌ Network error:', err);
+            alert('Network error. Could not print QR code.');
         }
     });
 }
@@ -57,7 +94,7 @@ if (formElement) {
         event.preventDefault();
         const formData = new FormData(formElement);
         const data = Object.fromEntries(formData.entries());
-        const zpl = createJSCC25Label({
+        const zpl = createJSCCLabel({
             name: String(data.participantName),
             company: String(data.companyName),
             tags: String(data.tagList).split(','),

@@ -7,5 +7,6 @@ export const ROUTES = {
     PRINT: '/print',
     PARTICIPANTS: '/participants',
     TEST_PRINTER: '/test-printer',
+    SERVER_INFO: '/server-info',
     ROOT: '/',
 }

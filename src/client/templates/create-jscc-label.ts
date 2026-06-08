@@ -1,7 +1,7 @@
 import {type LabelData} from "../../../server/utils/helper.ts";
 import {JSCC_YEAR} from "../../../server/constants.ts";
 
-export function createJSCC25Label(data: LabelData) {
+export function createJSCCLabel(data: LabelData) {
     const {name, company, tags} = data;
     const tagsLine = tags.join(", ");
 
