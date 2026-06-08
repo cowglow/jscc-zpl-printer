@@ -1,0 +1,1 @@
+export const JSCC_YEAR = 26;

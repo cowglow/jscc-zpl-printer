@@ -18,6 +18,6 @@ export async function print(request: FastifyRequest<PrintRequest>, reply: Fastif
         await sendZPLToUSBPrinter(printerName, zpl);
         reply.send({status: 'ZPL sent to printer'});
     } catch (error) {
-        reply.status(500).send({error: 'Failed to send ZPL to printer', details: error});
+        reply.status(500).send({error: 'Failed to send ZPL to printer', details: String(error)});
     }
 }

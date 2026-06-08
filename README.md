@@ -20,6 +20,18 @@ You need:
 
 ---
 
+## macOS Printer Driver
+
+The Intermec PC43t requires the **Gutenprint** open-source driver on macOS. Install it via Homebrew:
+
+```
+brew install gutenprint
+```
+
+After installing, restart your Mac (or restart CUPS: `sudo launchctl stop org.cups.cupsd`) before adding the printer.
+
+---
+
 ## Printer Setup (one-time)
 
 1. Connect the printer to the Mac mini via USB and power it on
@@ -113,7 +125,7 @@ Each participant has a `.json` file in the `sourceDir/` directory. See `sourceDi
 
 ## Updating for next year
 
-Change the year in one place — `server/constants.ts`:
+Change the year in one place — `src/shared/constants.ts`:
 
 ```ts
 export const JSCC_YEAR = 26;

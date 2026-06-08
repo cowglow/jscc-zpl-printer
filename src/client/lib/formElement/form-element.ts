@@ -1,5 +1,4 @@
 import {createJSCCLabel} from "../../templates/create-jscc-label.ts";
-import {createQRLabel} from "../../templates/create-qr-label.ts";
 
 const participantLabelsButton = document.querySelector<HTMLButtonElement>('#participant-labels');
 if (participantLabelsButton) {
@@ -43,13 +42,12 @@ if (printQrButton) {
             import.meta.env.VITE_PRINTER_NAME ||
             document.querySelector<HTMLSelectElement>('#printer-name')?.value
         );
-        const {url} = await fetch('/server-info').then(r => r.json());
-        const zpl = createQRLabel(url);
+        const {url, label} = await fetch('/server-info').then(r => r.json());
         try {
-            const response = await fetch('/print', {
+            const response = await fetch('/print-qr', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({zpl, printerName}),
+                body: JSON.stringify({printerName, url, labelWidth: label.width, labelHeight: label.height}),
             });
             if (response.ok) {
                 alert('✅ QR code label sent to printer!');
@@ -89,9 +87,27 @@ if (testPrinterButton) {
 }
 
 const formElement = document.querySelector<HTMLFormElement>('#form');
+const printButton = document.querySelector<HTMLButtonElement>('#-print-it');
+const nameInput = document.querySelector<HTMLInputElement>('#participant-name');
+
+if (printButton) printButton.disabled = true;
+
+if (import.meta.env.DEV && nameInput) {
+    nameInput.value = 'Luke Skywalker';
+    const tagInput = document.querySelector<HTMLTextAreaElement>('#tag-list');
+    if (tagInput) tagInput.value = 'jedi mind tricks';
+    printButton!.disabled = false;
+}
+
+nameInput?.addEventListener('input', () => {
+    if (printButton) printButton.disabled = !nameInput.value.trim();
+});
+
 if (formElement) {
     formElement.addEventListener('submit', async (event) => {
         event.preventDefault();
+        if (!printButton) return;
+        printButton.disabled = true;
         const formData = new FormData(formElement);
         const data = Object.fromEntries(formData.entries());
         const zpl = createJSCCLabel({
@@ -106,18 +122,17 @@ if (formElement) {
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({zpl, printerName}),
             });
-
             if (response.ok) {
-                console.log('✅ ZPL sent successfully!');
                 alert('✅ ZPL sent successfully!');
             } else {
-                const error = await response.json();
-                console.error('❌ Failed to send ZPL:', error);
-                alert(`Error: ${error.error || 'Failed to send ZPL'}`);
+                const error = await response.json().catch(() => ({}));
+                alert(`Error: ${error.error || `Server error ${response.status}`}`);
             }
         } catch (err) {
             console.error('❌ Network error:', err);
             alert('Network error. Could not send ZPL.');
+        } finally {
+            printButton.disabled = !nameInput?.value.trim();
         }
     });
 }

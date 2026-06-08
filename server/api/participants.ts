@@ -20,6 +20,6 @@ export async function participants(request: FastifyRequest<ParticipantRequest>, 
         }
         reply.send({status: 'Printing participants labels for #JSCC25'});
     } catch (error) {
-        reply.status(500).send({error: 'Failed to print participants data', details: error});
+        reply.status(500).send({error: 'Failed to print participants data', details: String(error)});
     }
 }
