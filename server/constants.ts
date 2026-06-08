@@ -9,5 +9,6 @@ export const ROUTES = {
     TEST_PRINTER: '/test-printer',
     SERVER_INFO: '/server-info',
     PRINT_QR: '/print-qr',
+    PRINTERS: '/printers',
     ROOT: '/',
 }

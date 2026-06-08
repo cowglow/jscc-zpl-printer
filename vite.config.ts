@@ -9,6 +9,7 @@ export default defineConfig({
             '/test-printer': 'http://localhost:3001',
             '/server-info': 'http://localhost:3001',
             '/print-qr': 'http://localhost:3001',
+            '/printers': 'http://localhost:3001',
         }
     }
 })

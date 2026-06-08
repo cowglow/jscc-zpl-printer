@@ -41,7 +41,7 @@ After installing, restart your Mac (or restart CUPS: `sudo launchctl stop org.cu
    ```
    lpstat -p
    ```
-   Copy the exact printer name (e.g. `Intermec_PC43t_300_FP`) — you'll need it for `.env`
+   This lists all printers registered with CUPS (macOS's print system) and their status. Copy the exact printer name (e.g. `Intermec_PC43t_300_FP`) — spacing and capitalisation must match exactly for `lp` to find it.
 
 5. If the printer shows as **Paused**, re-enable it:
    ```
@@ -84,17 +84,33 @@ The server starts on `http://localhost:3001`.
 
 ---
 
-## Accessing from the network
+## Network Setup
 
-Participants need to reach the server over the conference network. Find the Mac mini's IP:
+### Recommended: bring your own router
+
+Venue WiFi often has **client isolation** enabled, which blocks devices from reaching each other even on the same network. A travel router avoids this entirely.
+
+```
+[Participants on your WiFi] --> [Your router] --> [Mac mini] --> [Printer via USB]
+```
+
+1. Connect the Mac mini to your router (ethernet or WiFi)
+2. Participants connect to your router's WiFi SSID
+3. That's it — no venue dependency, no IT coordination needed
+
+### Alternative: venue WiFi
+
+Connect the Mac mini to venue WiFi. This works only if the venue allows device-to-device traffic. Many venues block it via client isolation — test before participants arrive.
+
+### Finding the Mac mini's IP
 
 ```
 ipconfig getifaddr en1
 ```
 
-Then open `http://<mac-mini-ip>:3001` from any device on the same network.
+Open `http://<mac-mini-ip>:3000` from any device on the same network to verify.
 
-**Tip:** Use the **Print WebClient QR** button in the Admin Actions section — it prints a label with a QR code pointing to the app. Scan it to verify the URL works before the conference starts.
+**Tip:** Use the **Print WebClient QR** button in Admin Actions — it prints a label with a QR code pointing to the correct IP automatically. Print one and scan it to confirm everything works before participants arrive.
 
 ---
 

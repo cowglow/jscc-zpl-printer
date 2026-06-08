@@ -23,17 +23,8 @@
         <h1>Label Printer</h1>
         <div class="feature-block">
             <label for="printer-name">Select Printer</label>
-            <select
-                    id="printer-name"
-                    aria-readonly="true"
-                    name="printerName"
-            >
-                <option value="Intermec_PC43t_300_FP">
-                    Intermec_PC43t_300_FP (macOS)
-                </option>
-                <option value="Intermec PC43t (300 dpi)">
-                    Intermec PC43t (300 dpi) (Windows)
-                </option>
+            <select id="printer-name" name="printerName">
+                <option value="">Loading printers…</option>
             </select>
         </div>
         <div class="feature-block">
@@ -48,7 +39,6 @@
                     type="text"
                     placeholder="Full or Partial Name"
                     autofocus
-                    value="Luke Skywalker"
             />
         </div>
         <div>
@@ -68,7 +58,7 @@
                 Web Design, AI)
             </small>
             <textarea id="tag-list" name="tagList" aria-describedby="tag-list-help"
-                      placeholder="HTML, CSS, JS">Jedi Mind Tricks</textarea>
+                      placeholder="HTML, CSS, JS"></textarea>
         </div>
         <div>
             <button id="-print-it" type="submit">Print</button>

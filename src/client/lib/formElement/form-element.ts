@@ -1,5 +1,19 @@
 import {createJSCCLabel} from "../../templates/create-jscc-label.ts";
 
+const printerSelect = document.querySelector<HTMLSelectElement>('#printer-name');
+if (printerSelect) {
+    fetch('/printers')
+        .then(r => r.json())
+        .then(({printers}: {printers: string[]}) => {
+            printerSelect.innerHTML = printers.length
+                ? printers.map(p => `<option value="${p}">${p}</option>`).join('')
+                : '<option value="">No printers found</option>';
+        })
+        .catch(() => {
+            printerSelect.innerHTML = '<option value="">Could not load printers</option>';
+        });
+}
+
 const participantLabelsButton = document.querySelector<HTMLButtonElement>('#participant-labels');
 if (participantLabelsButton) {
     participantLabelsButton.addEventListener('click', async (event) => {
@@ -90,14 +104,8 @@ const formElement = document.querySelector<HTMLFormElement>('#form');
 const printButton = document.querySelector<HTMLButtonElement>('#-print-it');
 const nameInput = document.querySelector<HTMLInputElement>('#participant-name');
 
-if (printButton) printButton.disabled = true;
 
-if (import.meta.env.DEV && nameInput) {
-    nameInput.value = 'Luke Skywalker';
-    const tagInput = document.querySelector<HTMLTextAreaElement>('#tag-list');
-    if (tagInput) tagInput.value = 'jedi mind tricks';
-    printButton!.disabled = false;
-}
+if (printButton) printButton.disabled = !nameInput?.value.trim();
 
 nameInput?.addEventListener('input', () => {
     if (printButton) printButton.disabled = !nameInput.value.trim();
