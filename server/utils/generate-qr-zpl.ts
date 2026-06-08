@@ -9,10 +9,8 @@ export async function generateQRLabelZPL(url: string, labelWidth: number, labelH
     const qr = QRCode.create(url, {errorCorrectionLevel: 'Q'});
     const moduleCount = qr.modules.size;
 
-    const availableWidth = labelWidth - MARGIN * 2;
-    // Reserve space below QR for URL text (~60px) and hashtag (~150px) with gaps
-    const availableHeight = labelHeight - MARGIN * 2 - 60 - 150 - 60;
-    const scale = Math.floor(Math.min(availableWidth, availableHeight) / moduleCount);
+    const maxSize = Math.floor(labelWidth * 0.6);
+    const scale = Math.floor(maxSize / moduleCount);
     const qrSize = moduleCount * scale;
 
     const rgba = new Uint8ClampedArray(qrSize * qrSize * 4).fill(255);
@@ -32,6 +30,7 @@ export async function generateQRLabelZPL(url: string, labelWidth: number, labelH
 
     const res = rgbaToZ64(rgba, qrSize);
     const qrX = Math.round((labelWidth - qrSize) / 2);
+    console.info(`[qr] modules=${moduleCount} scale=${scale} qrSize=${qrSize}px label=${labelWidth}×${labelHeight}dots qrX=${qrX}`);
     const urlY = MARGIN + qrSize + 30;
     const hashY = Math.round(labelHeight * 0.88);
 
