@@ -1,5 +1,56 @@
 import {createJSCC25Label} from "../../templates/create-jscc25-label.ts";
 
+const participantLabelsButton = document.querySelector<HTMLButtonElement>('#participant-labels');
+if (participantLabelsButton) {
+    participantLabelsButton.addEventListener('click', async (event) => {
+        event.preventDefault();
+        const printerName = String(
+            import.meta.env.VITE_PRINTER_NAME ||
+            document.querySelector<HTMLSelectElement>('#printer-name')?.value
+        );
+        try {
+            const response = await fetch('/participants', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({printerName, sourceDir: 'sourceDir'}),
+            });
+            if (response.ok) {
+                alert('✅ Participant labels sent to printer!');
+            } else {
+                const error = await response.json();
+                alert(`Error: ${error.error || 'Failed to print participants'}`);
+            }
+        } catch (err) {
+            console.error('❌ Network error:', err);
+            alert('Network error. Could not print participants.');
+        }
+    });
+}
+
+const testPrinterButton = document.querySelector<HTMLButtonElement>('#test-printer-connection');
+if (testPrinterButton) {
+    testPrinterButton.addEventListener('click', async (event) => {
+        event.preventDefault();
+        const printerIP = String(import.meta.env.VITE_PRINTER_IP || '');
+        if (!printerIP) {
+            alert('VITE_PRINTER_IP is not set in .env');
+            return;
+        }
+        try {
+            const response = await fetch('/test-printer', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({printerIP}),
+            });
+            const result = await response.json();
+            alert(result.message);
+        } catch (err) {
+            console.error('❌ Network error:', err);
+            alert('Network error. Could not reach server.');
+        }
+    });
+}
+
 const formElement = document.querySelector<HTMLFormElement>('#form');
 if (formElement) {
     formElement.addEventListener('submit', async (event) => {

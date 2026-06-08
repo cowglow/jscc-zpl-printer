@@ -1,4 +1,5 @@
 import {type LabelData} from "../../../server/utils/helper.ts";
+import {JSCC_YEAR} from "../../../server/constants.ts";
 
 export function createJSCC25Label(data: LabelData) {
     const {name, company, tags} = data;
@@ -22,7 +23,7 @@ export function createJSCC25Label(data: LabelData) {
 ^FD${tagsLine}^FS
 
 ^CF0,300
-^FO100,545^FD#JSCC25^FS
+^FO100,545^FD#JSCC${JSCC_YEAR}^FS
 
 ^XZ
 `.trim();

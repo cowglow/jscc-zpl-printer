@@ -1,3 +1,5 @@
+import {JSCC_YEAR} from "../../../server/constants.ts";
+
 type LabelData = {
 	name: string;
 	company: string;
@@ -26,7 +28,7 @@ export function generateZPL(labelData: LabelData): string {
 ^FD${tagsLine}^FS
 
 ^CF0,280
-^FO240,550^FD#JSCC25^FS
+^FO240,550^FD#JSCC${JSCC_YEAR}^FS
 
 ^XZ
 `.trim();

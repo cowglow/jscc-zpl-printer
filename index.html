@@ -47,7 +47,7 @@
             <div style="display: flex;">
                 <button id="verify-connection">Verify&nbsp;Connection</button>
                 <button id="send-to-terminal" disabled>Send&nbsp;to&nbsp;Terminal</button>
-                <button id="participant-labels">Participant&nbsp;Labels</button>
+<!--                <button id="participant-labels">Participant&nbsp;Labels</button>-->
             </div>
         </div>
         <!--    NEW -->
@@ -82,6 +82,13 @@
         </div>
         <div>
             <button id="-print-it" type="submit">Print</button>
+<!-- TO HIDE: style="display: none;" -->
+            <section style="display: flex; flex-direction: column;">
+                <h2>Admin Actions</h2>
+                <button id="participant-labels" type="button">Print&nbsp;All&nbsp;Participants</button>
+                <button id="test-printer-connection">Test&nbsp;Printer&nbsp;Connection</button>
+                <button id="print-client-qr">Print&nbsp;WebClient&nbsp;QR&nbsp;</button>
+            </section>
         </div>
     </div>
 </form>

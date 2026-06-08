@@ -6,6 +6,7 @@ import path from "node:path";
 import {ROUTES, SERVER_HOST, SERVER_PORT, SERVER_RUNNING_MESSAGE} from "./server/constants.ts";
 import {participants} from "./server/api/participants.ts";
 import {print} from "./server/api/print.ts";
+import {testPrinterConnection} from "./server/api/test-printer.ts";
 
 const fastify = Fastify({logger: true});
 
@@ -18,8 +19,9 @@ fastify.register(cors, {origin: true});
 fastify.get(ROUTES.ROOT, async (_, reply) =>
     reply.sendFile("index.html")
 );
-fastify.get(ROUTES.PARTICIPANTS, participants)
+fastify.post(ROUTES.PARTICIPANTS, participants);
 fastify.post(ROUTES.PRINT, print);
+fastify.post(ROUTES.TEST_PRINTER, testPrinterConnection);
 
 try {
     await fastify.listen({port: SERVER_PORT, host: SERVER_HOST})
