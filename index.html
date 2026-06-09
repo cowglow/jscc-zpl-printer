@@ -7,10 +7,13 @@
     <title>JSCC Participant Label Printer</title>
 </head>
 <body>
-<button id="open-admin">⚙ Admin</button>
+<div id="loading-overlay" aria-hidden="true">
+    <div class="spinner"></div>
+</div>
+<button id="open-admin" hidden>⚙ Admin</button>
 
-<dialog id="admin-dialog">
-    <h2>Admin Actions</h2>
+<dialog id="admin-dialog" aria-labelledby="admin-dialog-title">
+    <h2 id="admin-dialog-title">Admin Actions</h2>
     <button id="participant-labels">Print&nbsp;All&nbsp;Participants</button>
     <button id="test-printer-connection" class="feature-block">Test&nbsp;Printer&nbsp;Connection</button>
     <button id="print-client-qr">Print&nbsp;WebClient&nbsp;QR</button>
@@ -52,17 +55,14 @@
         </div>
         <div>
             <label for="tag-list">Tags</label>
-            <small id="tag-list-help" style="color: #555;">
-                Enter topics or ideas you would like to discuss or be asked about, separated by commas. (e.g.,
-                JavaScript,
-                Web Design, AI)
-            </small>
+            <details>
+                <summary id="tag-list-help">What are tags?</summary>
+                Topics or ideas you'd like to discuss, separated by commas. (e.g. JavaScript, Web Design, AI)
+            </details>
             <textarea id="tag-list" name="tagList" aria-describedby="tag-list-help"
                       placeholder="HTML, CSS, JS"></textarea>
         </div>
-        <div>
-            <button id="-print-it" type="submit">Print</button>
-        </div>
+        <button id="-print-it" type="submit">Print</button>
     </div>
 </form>
 <script type="module" src="src/client/main.ts"></script>

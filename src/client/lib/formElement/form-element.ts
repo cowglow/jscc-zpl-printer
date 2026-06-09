@@ -1,5 +1,20 @@
 import {createJSCCLabel} from "../../templates/create-jscc-label.ts";
 
+const overlay = document.querySelector<HTMLDivElement>('#loading-overlay')!;
+const showLoading = () => { overlay.classList.add('visible'); document.body.setAttribute('aria-busy', 'true'); };
+const hideLoading = () => { overlay.classList.remove('visible'); document.body.removeAttribute('aria-busy'); };
+
+if (new URLSearchParams(location.search).has('admin')) {
+    document.querySelector<HTMLButtonElement>('#open-admin')!.hidden = false;
+}
+
+if (import.meta.env.DEV) {
+    const banner = document.createElement('div');
+    banner.id = 'dev-banner';
+    banner.textContent = '⚠ Dev mode — printer output may not be available';
+    document.body.prepend(banner);
+}
+
 const printerSelect = document.querySelector<HTMLSelectElement>('#printer-name');
 if (printerSelect) {
     fetch('/printers')
@@ -14,14 +29,23 @@ if (printerSelect) {
         });
 }
 
+const adminDialog = document.querySelector<HTMLDialogElement>('#admin-dialog');
+document.querySelector('#open-admin')?.addEventListener('click', () => adminDialog?.showModal());
+document.querySelector('#close-admin')?.addEventListener('click', () => adminDialog?.close());
+adminDialog?.addEventListener('click', (event) => {
+    if (event.target === adminDialog) adminDialog.close();
+});
+
 const participantLabelsButton = document.querySelector<HTMLButtonElement>('#participant-labels');
 if (participantLabelsButton) {
     participantLabelsButton.addEventListener('click', async (event) => {
         event.preventDefault();
+        adminDialog?.close();
         const printerName = String(
             import.meta.env.VITE_PRINTER_NAME ||
             document.querySelector<HTMLSelectElement>('#printer-name')?.value
         );
+        showLoading();
         try {
             const response = await fetch('/participants', {
                 method: 'POST',
@@ -37,27 +61,24 @@ if (participantLabelsButton) {
         } catch (err) {
             console.error('❌ Network error:', err);
             alert('Network error. Could not print participants.');
+        } finally {
+            hideLoading();
         }
     });
 }
-
-const adminDialog = document.querySelector<HTMLDialogElement>('#admin-dialog');
-document.querySelector('#open-admin')?.addEventListener('click', () => adminDialog?.showModal());
-document.querySelector('#close-admin')?.addEventListener('click', () => adminDialog?.close());
-adminDialog?.addEventListener('click', (event) => {
-    if (event.target === adminDialog) adminDialog.close();
-});
 
 const printQrButton = document.querySelector<HTMLButtonElement>('#print-client-qr');
 if (printQrButton) {
     printQrButton.addEventListener('click', async (event) => {
         event.preventDefault();
+        adminDialog?.close();
         const printerName = String(
             import.meta.env.VITE_PRINTER_NAME ||
             document.querySelector<HTMLSelectElement>('#printer-name')?.value
         );
-        const {url, label} = await fetch('/server-info').then(r => r.json());
+        showLoading();
         try {
+            const {url, label} = await fetch('/server-info').then(r => r.json());
             const response = await fetch('/print-qr', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -72,6 +93,8 @@ if (printQrButton) {
         } catch (err) {
             console.error('❌ Network error:', err);
             alert('Network error. Could not print QR code.');
+        } finally {
+            hideLoading();
         }
     });
 }
@@ -80,22 +103,25 @@ const testPrinterButton = document.querySelector<HTMLButtonElement>('#test-print
 if (testPrinterButton) {
     testPrinterButton.addEventListener('click', async (event) => {
         event.preventDefault();
-        const printerIP = String(import.meta.env.VITE_PRINTER_IP || '');
-        if (!printerIP) {
-            alert('VITE_PRINTER_IP is not set in .env');
+        const printerName = String(import.meta.env.VITE_PRINTER_NAME || '');
+        if (!printerName) {
+            alert('VITE_PRINTER_NAME is not set in .env');
             return;
         }
+        showLoading();
         try {
             const response = await fetch('/test-printer', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({printerIP}),
+                body: JSON.stringify({printerName}),
             });
             const result = await response.json();
             alert(result.message);
         } catch (err) {
             console.error('❌ Network error:', err);
             alert('Network error. Could not reach server.');
+        } finally {
+            hideLoading();
         }
     });
 }
@@ -116,6 +142,7 @@ if (formElement) {
         event.preventDefault();
         if (!printButton) return;
         printButton.disabled = true;
+        showLoading();
         const formData = new FormData(formElement);
         const data = Object.fromEntries(formData.entries());
         const zpl = createJSCCLabel({
@@ -125,21 +152,27 @@ if (formElement) {
         });
         const printerName = String(import.meta.env.VITE_PRINTER_NAME || data.printerName);
         try {
-            const response = await fetch(`/print`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({zpl, printerName}),
-            });
-            if (response.ok) {
-                alert('✅ ZPL sent successfully!');
+            if (import.meta.env.DEV) {
+                await new Promise(resolve => setTimeout(resolve, 800));
+                alert('⚠ Dev mode: print simulated.');
             } else {
-                const error = await response.json().catch(() => ({}));
-                alert(`Error: ${error.error || `Server error ${response.status}`}`);
+                const response = await fetch(`/print`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({zpl, printerName}),
+                });
+                if (response.ok) {
+                    alert('✅ Label sent to printer!');
+                } else {
+                    const error = await response.json().catch(() => ({}));
+                    alert(`Error: ${error.error || `Server error ${response.status}`}`);
+                }
             }
         } catch (err) {
             console.error('❌ Network error:', err);
             alert('Network error. Could not send ZPL.');
         } finally {
+            hideLoading();
             printButton.disabled = !nameInput?.value.trim();
         }
     });

@@ -1,34 +1,37 @@
-import net from 'net';
+import {exec} from 'child_process';
 import type {FastifyReply, FastifyRequest, RequestGenericInterface} from 'fastify';
 
-const PRINTER_PORT = 9100;
-
 type TestPrinterRequest = RequestGenericInterface & {
-    Body: { printerIP: string }
+    Body: { printerName: string }
+}
+
+function checkCupsPrinter(printerName: string): Promise<{ready: boolean; message: string}> {
+    return new Promise((resolve) => {
+        exec(`lpstat -p ${JSON.stringify(printerName)}`, (error, stdout) => {
+            if (error || !stdout.trim()) {
+                resolve({ready: false, message: `Printer "${printerName}" not found in CUPS`});
+                return;
+            }
+            const idle = stdout.includes('idle') || stdout.includes('enabled');
+            if (idle) {
+                resolve({ready: true, message: `Printer "${printerName}" is ready`});
+            } else {
+                resolve({ready: false, message: `Printer "${printerName}" is not ready: ${stdout.trim()}`});
+            }
+        });
+    });
 }
 
 export async function testPrinterConnection(request: FastifyRequest<TestPrinterRequest>, reply: FastifyReply) {
-    const {printerIP} = request.body;
-    if (!printerIP) {
-        reply.status(400).send({error: 'printerIP is required'});
+    const {printerName} = request.body;
+    if (!printerName) {
+        reply.status(400).send({error: 'printerName is required'});
         return;
     }
-    return new Promise<void>((resolve) => {
-        const socket = new net.Socket();
-        socket.setTimeout(3000);
-        socket.connect(PRINTER_PORT, printerIP, () => {
-            socket.destroy();
-            reply.send({status: 'connected', message: `Printer at ${printerIP}:${PRINTER_PORT} is reachable`});
-            resolve();
-        });
-        socket.on('error', (err) => {
-            reply.status(500).send({status: 'error', message: `Cannot reach printer at ${printerIP}:${PRINTER_PORT}`, details: err.message});
-            resolve();
-        });
-        socket.on('timeout', () => {
-            socket.destroy();
-            reply.status(500).send({status: 'timeout', message: `Connection to ${printerIP}:${PRINTER_PORT} timed out`});
-            resolve();
-        });
-    });
+    const {ready, message} = await checkCupsPrinter(printerName);
+    if (ready) {
+        reply.send({status: 'connected', message});
+    } else {
+        reply.status(500).send({status: 'error', message});
+    }
 }
