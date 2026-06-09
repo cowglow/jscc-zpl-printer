@@ -1,2 +1,2 @@
 import "./style.css";
-import "./lib/formElement/form-element.ts"
+import "./lib/formElement/form-element.ts";

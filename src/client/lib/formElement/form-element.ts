@@ -15,19 +15,44 @@ if (import.meta.env.DEV) {
     document.body.prepend(banner);
 }
 
-const printerSelect = document.querySelector<HTMLSelectElement>('#printer-name');
-if (printerSelect) {
-    fetch('/printers')
-        .then(r => r.json())
-        .then(({printers}: {printers: string[]}) => {
-            printerSelect.innerHTML = printers.length
-                ? printers.map(p => `<option value="${p}">${p}</option>`).join('')
-                : '<option value="">No printers found</option>';
-        })
-        .catch(() => {
-            printerSelect.innerHTML = '<option value="">Could not load printers</option>';
-        });
+const PRINTER_KEY = 'jscc-printer';
+
+function getActivePrinter(): string {
+    return localStorage.getItem(PRINTER_KEY) || '';
 }
+
+function setActivePrinter(name: string) {
+    localStorage.setItem(PRINTER_KEY, name);
+}
+
+// Populate both printer selects from /printers; keep admin select in sync with localStorage
+const adminPrinterSelect  = document.querySelector<HTMLSelectElement>('#admin-printer-select');
+const formPrinterSelect   = document.querySelector<HTMLSelectElement>('#printer-name');
+
+fetch('/printers')
+    .then(r => r.json())
+    .then(({printers}: {printers: string[]}) => {
+        const opts = printers.length
+            ? printers.map(p => `<option value="${p}">${p}</option>`).join('')
+            : '<option value="">No printers found</option>';
+
+        if (formPrinterSelect)  formPrinterSelect.innerHTML  = opts;
+
+        if (adminPrinterSelect) {
+            adminPrinterSelect.innerHTML = opts;
+            const saved = getActivePrinter();
+            if (saved && printers.includes(saved)) adminPrinterSelect.value = saved;
+        }
+    })
+    .catch(() => {
+        const err = '<option value="">Could not load printers</option>';
+        if (formPrinterSelect)  formPrinterSelect.innerHTML  = err;
+        if (adminPrinterSelect) adminPrinterSelect.innerHTML = err;
+    });
+
+adminPrinterSelect?.addEventListener('change', () => {
+    setActivePrinter(adminPrinterSelect.value);
+});
 
 const adminDialog = document.querySelector<HTMLDialogElement>('#admin-dialog');
 document.querySelector('#open-admin')?.addEventListener('click', () => adminDialog?.showModal());
@@ -150,7 +175,7 @@ if (formElement) {
             company: String(data.companyName),
             tags: String(data.tagList).split(','),
         });
-        const printerName = String(import.meta.env.VITE_PRINTER_NAME || data.printerName);
+        const printerName = import.meta.env.VITE_PRINTER_NAME || getActivePrinter() || String(data.printerName) || undefined;
         try {
             if (import.meta.env.DEV) {
                 await new Promise(resolve => setTimeout(resolve, 800));

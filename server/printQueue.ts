@@ -6,6 +6,7 @@ export type PrinterStatus = 'idle' | 'printing' | 'down';
 export type PrintJob = {
     id: string;
     zpl: string;
+    printerName?: string;  // when set, only dispatch to this specific printer
     status: 'queued' | 'printing' | 'done' | 'failed';
     printerId?: string;
     createdAt: number;
@@ -48,10 +49,11 @@ export async function initPrinterPool(maxPrinters = 2): Promise<void> {
     }
 }
 
-export function enqueueJob(zpl: string): PrintJob {
+export function enqueueJob(zpl: string, printerName?: string): PrintJob {
     const job: PrintJob = {
         id: `job-${++jobCounter}`,
         zpl,
+        printerName,
         status: 'queued',
         createdAt: Date.now(),
     };
@@ -64,8 +66,10 @@ export function enqueueJob(zpl: string): PrintJob {
 function dispatch(): void {
     for (const printer of printerRegistry) {
         if (printer.status !== 'idle') continue;
-        const job = jobQueue.shift(); // synchronous grab — must happen before any await
-        if (!job) break;
+        // Find the first queued job that targets this printer (or has no target)
+        const idx = jobQueue.findIndex(j => !j.printerName || j.printerName === printer.id);
+        if (idx === -1) continue;
+        const [job] = jobQueue.splice(idx, 1); // synchronous removal before any await
         printer.status = 'printing';
         job.status = 'printing';
         job.printerId = printer.id;

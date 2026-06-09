@@ -1,0 +1,3 @@
+- Detect the printer loaded dimension to adjust the print area
+- Drop admin URL Search Param.
+- Drop Admin Action Dialog. Switch to page

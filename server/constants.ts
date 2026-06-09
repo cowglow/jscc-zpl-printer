@@ -15,4 +15,5 @@ export const ROUTES = {
     PRINTER_RECOVER: '/printers/:id/recover',
     JOB: '/jobs/:id',
     ROOT: '/',
+    STICKER: '/sticker',
 }

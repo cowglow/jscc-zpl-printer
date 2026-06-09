@@ -23,9 +23,8 @@ const __dirname = path.dirname(__filename);
 fastify.register(fastifyStatic, {root: path.join(__dirname, "dist"), prefix: "/jscc-zpl-image/"});
 fastify.register(cors, {origin: true});
 
-fastify.get(ROUTES.ROOT, async (_, reply) =>
-    reply.sendFile("index.html")
-);
+fastify.get(ROUTES.ROOT,    async (_, reply) => reply.sendFile("index.html"));
+fastify.get(ROUTES.STICKER, async (_, reply) => reply.sendFile("sticker.html"));
 fastify.post(ROUTES.PARTICIPANTS, participants);
 fastify.post(ROUTES.PRINT, print);
 fastify.post(ROUTES.TEST_PRINTER, testPrinterConnection);

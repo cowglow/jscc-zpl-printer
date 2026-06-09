@@ -1,0 +1,223 @@
+/* Sticker / on-demand image printer page */
+
+:root {
+    --ink:    #111111;
+    --paper:  #f7f6f3;   /* thermal-paper cream */
+    --mid:    #888888;
+    --border: #cccccc;
+    --radius: 10px;
+    --font:   'Courier New', 'Lucida Console', monospace;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: var(--font), serif;
+    background: var(--paper);
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100%;
+    padding: 32px 16px 48px;
+    gap: 28px;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+
+header {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+header h1 {
+    font-size: 1.1em;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.back-link {
+    font-size: 0.8em;
+    color: var(--mid);
+    text-decoration: none;
+}
+.back-link:hover { color: var(--ink); }
+
+/* ── Drop zone ───────────────────────────────────────────────────────────── */
+
+#drop-zone {
+    width: 100%;
+    max-width: 420px;
+    min-height: 240px;
+    border: 3px dashed var(--border);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    padding: 40px 24px;
+    text-align: center;
+}
+
+#drop-zone:hover,
+#drop-zone.drag-over {
+    border-color: var(--ink);
+    background: #fff;
+}
+
+#drop-zone .drop-icon {
+    font-size: 3rem;
+    line-height: 1;
+    user-select: none;
+}
+
+#drop-zone .drop-label {
+    font-weight: 700;
+    font-size: 1em;
+    letter-spacing: 0.05em;
+}
+
+#drop-zone .drop-sub {
+    font-size: 0.78em;
+    color: var(--mid);
+    letter-spacing: 0.08em;
+}
+
+#drop-zone .browse-btn {
+    margin-top: 8px;
+    padding: 8px 20px;
+    border: 1px solid var(--ink);
+    border-radius: 4px;
+    background: transparent;
+    font-family: var(--font), serif;
+    font-size: 0.85em;
+    cursor: pointer;
+    letter-spacing: 0.06em;
+}
+#drop-zone .browse-btn:hover { background: var(--ink); color: var(--paper); }
+
+/* ── Preview ─────────────────────────────────────────────────────────────── */
+
+#preview-wrap {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.canvas-frame {
+    box-shadow:
+        0 0 0 1px var(--border),
+        0 4px 20px rgba(0, 0, 0, 0.12);
+    border-radius: 3px;
+    overflow: hidden;
+    background: #fff;
+    display: inline-block;
+}
+
+#label-canvas {
+    display: block;
+    width: 260px;
+}
+
+/* ── Controls ─────────────────────────────────────────────────────────────── */
+
+.controls {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.control-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.control-row span {
+    font-size: 0.78em;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mid);
+    white-space: nowrap;
+    min-width: 64px;
+}
+
+.control-row input[type="range"] {
+    flex: 1;
+    accent-color: var(--ink);
+    cursor: pointer;
+}
+
+.control-row output {
+    font-size: 0.82em;
+    width: 2.6em;
+    text-align: right;
+    color: var(--mid);
+}
+
+/* ── Print button ─────────────────────────────────────────────────────────── */
+
+#print-btn {
+    width: 100%;
+    padding: 16px;
+    font-family: var(--font), serif;
+    font-size: 1.2em;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 0;          /* sharp corners — industrial */
+    cursor: pointer;
+    transition: opacity 0.12s;
+}
+
+#print-btn:hover:not(:disabled) { opacity: 0.8; }
+#print-btn:disabled { opacity: 0.25; cursor: default; }
+
+/* ── Meta row ─────────────────────────────────────────────────────────────── */
+
+.meta-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+#status {
+    font-size: 0.78em;
+    color: var(--mid);
+    letter-spacing: 0.04em;
+}
+
+#change-btn {
+    background: none;
+    border: none;
+    font-family: var(--font), serif;
+    font-size: 0.78em;
+    color: var(--mid);
+    cursor: pointer;
+    text-decoration: underline;
+    letter-spacing: 0.04em;
+}
+#change-btn:hover { color: var(--ink); }
