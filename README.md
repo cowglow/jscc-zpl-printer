@@ -6,6 +6,12 @@ An open-source project for printing JSCC (JavaScript Conference) badges using ZP
 
 ---
 
+## Client App
+
+![Client App](public/client-screenshot.png)
+
+---
+
 ## Hardware Setup
 
 You need:
@@ -41,7 +47,7 @@ After installing, restart your Mac (or restart CUPS: `sudo launchctl stop org.cu
    ```
    lpstat -p
    ```
-   This lists all printers registered with CUPS (macOS's print system) and their status. Copy the exact printer name (e.g. `Intermec_PC43t_300_FP`) — spacing and capitalisation must match exactly for `lp` to find it.
+   This lists all printers registered with CUPS (macOS's print system). The server auto-detects installed printers and populates a dropdown in the UI — no manual copy-paste needed.
 
 5. If the printer shows as **Paused**, re-enable it:
    ```
@@ -52,6 +58,10 @@ After installing, restart your Mac (or restart CUPS: `sudo launchctl stop org.cu
 ---
 
 ## Server Setup
+
+### 0. Prerequisites
+
+- **Node.js 22.6+** — required for native TypeScript support (`node server.ts` runs without a build step)
 
 ### 1. Clone and install
 
@@ -69,9 +79,15 @@ cp .env.example .env
 ```
 
 ```env
-VITE_PRINTER_NAME=Intermec_PC43t_300_FP   # must match lpstat -p output exactly
-VITE_PRINTER_IP=192.168.1.236             # printer's network IP (shown on printer screen)
+VITE_PRINTER_NAME=Intermec_PC43t_300_FP   # optional — overrides the UI printer dropdown
+
+# Optional: override auto-detected label dimensions (in printer dots at 300dpi)
+# e.g. 4"x6" = 1200x1800, 4"x3" = 1200x900, 40mm×60mm = 472x709
+# LABEL_WIDTH_DOTS=1200
+# LABEL_HEIGHT_DOTS=1800
 ```
+
+`VITE_PRINTER_NAME` is optional. When omitted, the UI shows a dropdown of all printers detected on the machine. Label dimensions are auto-detected via IPP and only need to be overridden if auto-detection doesn't work.
 
 ### 3. Build and run
 
@@ -80,7 +96,7 @@ npm run build
 npm run server
 ```
 
-The server starts on `http://localhost:3001`.
+The server starts on `http://localhost:3000` and serves the UI from the built `dist/` folder.
 
 ---
 
@@ -105,8 +121,10 @@ Connect the Mac mini to venue WiFi. This works only if the venue allows device-t
 ### Finding the Mac mini's IP
 
 ```
-ipconfig getifaddr en1
+ipconfig getifaddr en0 || ipconfig getifaddr en1
 ```
+
+(`en0` is typically the active interface on newer Macs; `en1` on older ones.)
 
 Open `http://<mac-mini-ip>:3000` from any device on the same network to verify.
 
@@ -133,9 +151,11 @@ Each participant has a `.json` file in the `sourceDir/` directory. See `sourceDi
 | Action | How |
 |---|---|
 | Print a single badge | Fill in the form and click **Print** |
-| Print all participant badges | Click **Print All Participants** in Admin Actions |
-| Print the QR code label | Click **Print WebClient QR** in Admin Actions — open the app via the Mac mini's network IP first so the QR encodes the right URL |
-| Test printer connectivity | Click **Test Printer Connection** in Admin Actions |
+| Print all participant badges | Open Admin Actions (`?admin` in the URL) and click **Print All Participants** |
+| Print the QR code label | Open Admin Actions and click **Print WebClient QR** — open the app via the Mac mini's network IP first so the QR encodes the right URL |
+| Test printer connectivity | Open Admin Actions and click **Test Printer Connection** |
+
+> Admin Actions are hidden by default. Append `?admin` to the URL to reveal the Admin button (e.g. `http://192.168.1.100:3000?admin`).
 
 ---
 
@@ -154,6 +174,19 @@ npm run build
 
 ---
 
+## Development
+
+Run the backend and frontend separately:
+
+```
+npm run dev:server   # backend on http://localhost:3001
+npm run dev          # Vite frontend on http://localhost:3000
+```
+
+A banner is shown in the UI when running in dev mode — print actions are simulated and no actual print job is sent.
+
+---
+
 ## ZPL reference
 
 Send ZPL directly from the terminal (macOS):
@@ -161,7 +194,7 @@ Send ZPL directly from the terminal (macOS):
 echo "^XA^FO50,50^A0N,80,80^FDTEST^FS^XZ" | lp -d Intermec_PC43t_300_FP -o raw
 ```
 
-Send ZPL directly from the terminal (Windows):
+Send ZPL directly over the network (the printer's IP is shown on its screen):
 ```
-echo "^XA^FO50,50^A0N,80,80^FDTEST^FS^XZ" | ncat 192.168.1.236 9100
+echo "^XA^FO50,50^A0N,80,80^FDTEST^FS^XZ" | ncat <printer-ip> 9100
 ```
