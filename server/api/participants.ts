@@ -1,25 +1,22 @@
 import type {FastifyReply, FastifyRequest, RequestGenericInterface} from "fastify";
 import {loadParticipants} from "../utils/load-participants.ts";
 import {createJSCCLabel} from "../../src/client/templates/create-jscc-label.ts";
-import {sendZPLToUSBPrinter} from "../utils/helper.ts";
+import {enqueueJob} from '../printQueue.ts';
 
 type ParticipantRequest = RequestGenericInterface & {
-    Body: {
-        printerName: string
-        sourceDir: string
-    }
+    Body: { sourceDir: string }
 }
 
 export async function participants(request: FastifyRequest<ParticipantRequest>, reply: FastifyReply): Promise<void> {
-    const {printerName, sourceDir} = request.body;
+    const {sourceDir} = request.body;
     try {
-        const participants = await loadParticipants(sourceDir);
-        for (const participant of participants) {
+        const list = await loadParticipants(sourceDir);
+        const jobs = list.map(participant => {
             const zpl = createJSCCLabel(participant);
-            await sendZPLToUSBPrinter(printerName, zpl);
-        }
-        reply.send({status: 'Printing participants labels for #JSCC25'});
+            return enqueueJob(zpl);
+        });
+        reply.status(202).send({queued: jobs.length, jobIds: jobs.map(j => j.id)});
     } catch (error) {
-        reply.status(500).send({error: 'Failed to print participants data', details: String(error)});
+        reply.status(500).send({error: 'Failed to queue participant labels', details: String(error)});
     }
 }
