@@ -1,16 +1,26 @@
-html, body {
+:root {
+    --jscc-color: #b06bff;
+    --accent: var(--jscc-color);
+    --text: #222;
+    --label: #3e3e3e;
+    --muted: #555;
+    --border: #bdbdbd;
+    --input-bg: #fafafa;
+    --disabled-bg: #eee;
+    --disabled-text: #aaa;
+    --overlay: rgba(0, 0, 0, 0.55);
+}
+
+html {
     height: 100%;
-    min-height: 100svh;
 }
 
 body {
-    min-height: 100vh;
-    height: 100%;
+    min-height: 100svh;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
-    background: linear-gradient(135deg, #0066001a, #fff 20em), linear-gradient(-45deg, #004d001a, #fff 20em);
     margin: 0 auto;
     padding: 1.5rem;
     max-width: 800px;
@@ -19,7 +29,7 @@ body {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-body > div {
+form > div {
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
@@ -32,18 +42,21 @@ body > div {
     box-sizing: border-box;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    padding: 0;
+}
+
 h1 {
     font-size: clamp(2rem, 8vw, 4rem);
     line-height: 1.1;
     white-space: preserve-breaks;
-    overflow: hidden;
-    text-overflow: ellipsis;
     width: 100%;
     text-transform: uppercase;
 }
 
 div {
-    border: 1px solid black;
+    border: thin solid black;
     display: flex;
     flex-direction: column;
     padding: 1rem;
@@ -51,12 +64,14 @@ div {
     box-sizing: border-box;
 }
 
+div div {
+    padding-bottom: 0;
+}
+
 label {
-    position: relative;
     font-size: 1rem;
-    color: #3e3e3e;
+    color: var(--label);
     font-weight: 500;
-    text-transform: none;
     letter-spacing: 0.01em;
 }
 
@@ -64,35 +79,33 @@ input,
 select,
 textarea {
     padding: 1em 0.75em;
-    border: thin solid #bdbdbd;
+    border: thin solid var(--border);
     border-radius: 0.5em;
-    background: #fafafa;
+    background: var(--input-bg);
     transition: border-color 0.2s, box-shadow 0.2s;
     outline: none;
     margin-bottom: 1.5rem;
-    box-shadow: none;
-    color: #222;
-    user-select: auto;
+    color: var(--text);
 }
 
 input:focus,
 textarea:focus,
 select:focus {
-    border-color: #fbc641;
-    box-shadow: 0 0 0 2px #1976d233;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent);
     background: #fff;
 }
 
 input:disabled,
 textarea:disabled,
 select:disabled {
-    background: #eee;
-    color: #aaa;
+    background: var(--disabled-bg);
+    color: var(--disabled-text);
 }
 
-input[type="text"]:not(:placeholder-shown) + label,
-textarea:not(:placeholder-shown) + label {
-    color: #fbc641;
+div:has(input[type="text"]:not(:placeholder-shown)) > label,
+div:has(textarea:not(:placeholder-shown)) > label {
+    color: var(--accent);
 }
 
 button {
@@ -102,12 +115,12 @@ button {
     font-size: 1.5em;
     font-weight: 700;
     border-radius: 0.5em;
-    background: #fbc641;
+    background: var(--accent);
 }
 
 button:active {
     background: black;
-    color: #FFF;
+    color: white;
 }
 
 @media (min-width: 600px) {
@@ -122,4 +135,92 @@ button:active {
 
 .feature-block {
     display: none;
+}
+
+details {
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+summary {
+    cursor: pointer;
+    color: var(--accent);
+    font-weight: 500;
+}
+
+#dev-banner {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    background: #1a1a1a;
+    color: #f0c040;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.4rem 0.85rem;
+    border-radius: 2rem;
+    z-index: 100;
+    pointer-events: none;
+}
+
+#open-admin {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: auto;
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+    border-radius: 2rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    z-index: 100;
+}
+
+#admin-dialog {
+    border: none;
+    border-radius: 1rem;
+    width: min(100%, 420px);
+    margin: auto;
+}
+
+#admin-dialog[open] {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+#admin-dialog h2 {
+    margin: 0 auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#admin-dialog::backdrop {
+    background: var(--overlay);
+}
+
+#loading-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--overlay);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+#loading-overlay.visible {
+    display: flex;
+}
+
+.spinner {
+    width: 3.5rem;
+    height: 3.5rem;
+    border: 5px solid rgba(255, 255, 255, 0.25);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
