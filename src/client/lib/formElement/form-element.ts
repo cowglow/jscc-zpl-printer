@@ -5,6 +5,9 @@ const overlay = document.querySelector<HTMLDivElement>('#loading-overlay')!;
 const showLoading = () => { overlay.classList.add('visible'); document.body.setAttribute('aria-busy', 'true'); };
 const hideLoading = () => { overlay.classList.remove('visible'); document.body.removeAttribute('aria-busy'); };
 
+const IS_DEMO = import.meta.env.MODE === 'demo';
+const DEMO_MSG = '⚠ Demo only — this build has no backend. Printing is disabled.';
+
 if (new URLSearchParams(location.search).has('admin')) {
     document.querySelector<HTMLButtonElement>('#open-admin')!.hidden = false;
 }
@@ -16,6 +19,12 @@ if (import.meta.env.DEV) {
     document.body.prepend(banner);
 }
 
+if (IS_DEMO) {
+    const banner = document.createElement('div');
+    banner.id = 'demo-banner';
+    banner.textContent = '🔴 Demo Mode — this is a preview only. Printing is disabled.';
+    document.body.prepend(banner);
+}
 
 const printerInput = document.querySelector<HTMLInputElement>('#printer-name');
 const adminPrinterSelect = document.querySelector<HTMLSelectElement>('#admin-printer-select');
@@ -41,23 +50,30 @@ if (adminPrinterSelect) {
     });
 }
 
-fetch('/printers')
-    .then(r => r.json())
-    .then(({printers}: {printers: string[]}) => {
-        const saved = localStorage.getItem(PRINTER_STORAGE_KEY);
-        if (adminPrinterSelect) {
-            const placeholder = '<option value="">Select a printer…</option>';
-            adminPrinterSelect.innerHTML = placeholder + printers.map(p => `<option value="${p}">${p}</option>`).join('');
-        }
-        if (printers.length) {
-            if (saved && printers.includes(saved)) setActivePrinter(saved);
-        } else {
-            setActivePrinter('');
-        }
-    })
-    .catch(() => {
-        if (adminPrinterSelect) adminPrinterSelect.innerHTML = '<option value="">Could not load printers</option>';
-    });
+if (IS_DEMO) {
+    if (adminPrinterSelect) {
+        adminPrinterSelect.innerHTML = '<option value="Demo Printer">Demo Printer</option>';
+    }
+    setActivePrinter('Demo Printer');
+} else {
+    fetch('/printers')
+        .then(r => r.json())
+        .then(({printers}: {printers: string[]}) => {
+            const saved = localStorage.getItem(PRINTER_STORAGE_KEY);
+            if (adminPrinterSelect) {
+                const placeholder = '<option value="">Select a printer…</option>';
+                adminPrinterSelect.innerHTML = placeholder + printers.map(p => `<option value="${p}">${p}</option>`).join('');
+            }
+            if (printers.length) {
+                if (saved && printers.includes(saved)) setActivePrinter(saved);
+            } else {
+                setActivePrinter('');
+            }
+        })
+        .catch(() => {
+            if (adminPrinterSelect) adminPrinterSelect.innerHTML = '<option value="">Could not load printers</option>';
+        });
+}
 
 const adminDialog = document.querySelector<HTMLDialogElement>('#admin-dialog');
 document.querySelector('#open-admin')?.addEventListener('click', () => adminDialog?.showModal());
@@ -70,6 +86,7 @@ const participantLabelsButton = document.querySelector<HTMLButtonElement>('#part
 if (participantLabelsButton) {
     participantLabelsButton.addEventListener('click', async (event) => {
         event.preventDefault();
+        if (IS_DEMO) { alert(DEMO_MSG); return; }
         adminDialog?.close();
         const printerName = String(
             import.meta.env.VITE_PRINTER_NAME ||
@@ -101,6 +118,7 @@ const printQrButton = document.querySelector<HTMLButtonElement>('#print-client-q
 if (printQrButton) {
     printQrButton.addEventListener('click', async (event) => {
         event.preventDefault();
+        if (IS_DEMO) { alert(DEMO_MSG); return; }
         adminDialog?.close();
         const printerName = String(
             import.meta.env.VITE_PRINTER_NAME ||
@@ -133,6 +151,7 @@ const testPrinterButton = document.querySelector<HTMLButtonElement>('#test-print
 if (testPrinterButton) {
     testPrinterButton.addEventListener('click', async (event) => {
         event.preventDefault();
+        if (IS_DEMO) { alert(DEMO_MSG); return; }
         const printerName = String(import.meta.env.VITE_PRINTER_NAME || '');
         if (!printerName) {
             alert('VITE_PRINTER_NAME is not set in .env');
@@ -182,7 +201,10 @@ if (formElement) {
         });
         const printerName = String(import.meta.env.VITE_PRINTER_NAME || data.printerName);
         try {
-            if (import.meta.env.DEV) {
+            if (IS_DEMO) {
+                await new Promise(resolve => setTimeout(resolve, 800));
+                alert(DEMO_MSG);
+            } else if (import.meta.env.DEV) {
                 await new Promise(resolve => setTimeout(resolve, 800));
                 alert('⚠ Dev mode: print simulated.');
             } else {

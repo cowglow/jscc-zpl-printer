@@ -162,6 +162,25 @@ summary {
     pointer-events: none;
 }
 
+#demo-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #b91c1c;
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    z-index: 100;
+    pointer-events: none;
+    letter-spacing: 0.03em;
+    border: none;
+    display: block;
+    gap: 0;
+}
+
 #open-admin {
     position: fixed;
     bottom: 1.5rem;
