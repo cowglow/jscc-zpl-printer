@@ -33,7 +33,7 @@ jobs:
 
       - name: Build
         run: |
-          npm run build
+          npm run build-github-page
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
         with:
