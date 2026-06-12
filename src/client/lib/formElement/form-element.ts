@@ -1,4 +1,5 @@
 import {createJSCCLabel} from "../../templates/create-jscc-label.ts";
+import {PRINTER_STORAGE_KEY} from "../../../shared/constants.ts";
 
 const overlay = document.querySelector<HTMLDivElement>('#loading-overlay')!;
 const showLoading = () => { overlay.classList.add('visible'); document.body.setAttribute('aria-busy', 'true'); };
@@ -15,19 +16,48 @@ if (import.meta.env.DEV) {
     document.body.prepend(banner);
 }
 
-const printerSelect = document.querySelector<HTMLSelectElement>('#printer-name');
-if (printerSelect) {
-    fetch('/printers')
-        .then(r => r.json())
-        .then(({printers}: {printers: string[]}) => {
-            printerSelect.innerHTML = printers.length
-                ? printers.map(p => `<option value="${p}">${p}</option>`).join('')
-                : '<option value="">No printers found</option>';
-        })
-        .catch(() => {
-            printerSelect.innerHTML = '<option value="">Could not load printers</option>';
-        });
+
+const printerInput = document.querySelector<HTMLInputElement>('#printer-name');
+const adminPrinterSelect = document.querySelector<HTMLSelectElement>('#admin-printer-select');
+
+function setActivePrinter(name: string) {
+    if (printerInput) printerInput.value = name;
+    if (adminPrinterSelect) adminPrinterSelect.value = name;
+    if (name) {
+        localStorage.setItem(PRINTER_STORAGE_KEY, name);
+    } else {
+        localStorage.removeItem(PRINTER_STORAGE_KEY);
+    }
 }
+
+if (printerInput) {
+    const saved = localStorage.getItem(PRINTER_STORAGE_KEY);
+    if (saved) printerInput.value = saved;
+}
+
+if (adminPrinterSelect) {
+    adminPrinterSelect.addEventListener('change', () => {
+        setActivePrinter(adminPrinterSelect.value);
+    });
+}
+
+fetch('/printers')
+    .then(r => r.json())
+    .then(({printers}: {printers: string[]}) => {
+        const saved = localStorage.getItem(PRINTER_STORAGE_KEY);
+        if (adminPrinterSelect) {
+            const placeholder = '<option value="">Select a printer…</option>';
+            adminPrinterSelect.innerHTML = placeholder + printers.map(p => `<option value="${p}">${p}</option>`).join('');
+        }
+        if (printers.length) {
+            if (saved && printers.includes(saved)) setActivePrinter(saved);
+        } else {
+            setActivePrinter('');
+        }
+    })
+    .catch(() => {
+        if (adminPrinterSelect) adminPrinterSelect.innerHTML = '<option value="">Could not load printers</option>';
+    });
 
 const adminDialog = document.querySelector<HTMLDialogElement>('#admin-dialog');
 document.querySelector('#open-admin')?.addEventListener('click', () => adminDialog?.showModal());
@@ -43,7 +73,7 @@ if (participantLabelsButton) {
         adminDialog?.close();
         const printerName = String(
             import.meta.env.VITE_PRINTER_NAME ||
-            document.querySelector<HTMLSelectElement>('#printer-name')?.value
+            document.querySelector<HTMLInputElement>('#printer-name')?.value
         );
         showLoading();
         try {
@@ -74,7 +104,7 @@ if (printQrButton) {
         adminDialog?.close();
         const printerName = String(
             import.meta.env.VITE_PRINTER_NAME ||
-            document.querySelector<HTMLSelectElement>('#printer-name')?.value
+            document.querySelector<HTMLInputElement>('#printer-name')?.value
         );
         showLoading();
         try {

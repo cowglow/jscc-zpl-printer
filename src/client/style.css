@@ -194,6 +194,16 @@ summary {
     text-overflow: ellipsis;
 }
 
+#admin-dialog select {
+    margin-bottom: 0;
+}
+
+#admin-dialog hr {
+    border: none;
+    border-top: 2px solid color-mix(in srgb, var(--accent) 25%, transparent);
+    margin: 0.25rem 0;
+}
+
 #admin-dialog::backdrop {
     background: var(--overlay);
 }
