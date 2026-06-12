@@ -14,15 +14,14 @@
 
 <dialog id="admin-dialog" aria-labelledby="admin-dialog-title">
     <h2 id="admin-dialog-title">Admin Actions</h2>
-    <div>
-        <label for="admin-printer-select">Active Printer</label>
-        <select id="admin-printer-select">
-            <option value="">Loading printers…</option>
-        </select>
-    </div>
+    <label for="admin-printer-select" style="display: none">Printer</label>
+    <select id="admin-printer-select">
+        <option value="">Loading printers…</option>
+    </select>
     <button id="participant-labels">Print&nbsp;All&nbsp;Participants</button>
     <button id="test-printer-connection" class="feature-block">Test&nbsp;Printer&nbsp;Connection</button>
     <button id="print-client-qr">Print&nbsp;WebClient&nbsp;QR</button>
+    <hr/>
     <button id="close-admin">Close</button>
 </dialog>
 
@@ -30,12 +29,7 @@
     <div style="flex-direction: column">
         <img src="/jscc-og-image.png" alt="JSCC" style="width: 100%; max-width: 600px;" />
         <h1>Label Printer</h1>
-        <div class="feature-block">
-            <label for="printer-name">Select Printer</label>
-            <select id="printer-name" name="printerName">
-                <option value="">Loading printers…</option>
-            </select>
-        </div>
+        <input type="hidden" id="printer-name" name="printerName" style="padding: 0" />
         <div class="feature-block">
             <label for="file-upload">PNG to ZPL</label>
             <input type="file" id="file-upload" accept="image/png"/>

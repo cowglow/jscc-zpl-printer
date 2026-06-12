@@ -1,4 +1,5 @@
 import {createJSCCLabel} from "../../templates/create-jscc-label.ts";
+import {PRINTER_STORAGE_KEY} from "../../../shared/constants.ts";
 
 const overlay = document.querySelector<HTMLDivElement>('#loading-overlay')!;
 const showLoading = () => { overlay.classList.add('visible'); document.body.setAttribute('aria-busy', 'true'); };
@@ -15,44 +16,48 @@ if (import.meta.env.DEV) {
     document.body.prepend(banner);
 }
 
-const PRINTER_KEY = 'jscc-printer';
 
-function getActivePrinter(): string {
-    return localStorage.getItem(PRINTER_KEY) || '';
-}
+const printerInput = document.querySelector<HTMLInputElement>('#printer-name');
+const adminPrinterSelect = document.querySelector<HTMLSelectElement>('#admin-printer-select');
 
 function setActivePrinter(name: string) {
-    localStorage.setItem(PRINTER_KEY, name);
+    if (printerInput) printerInput.value = name;
+    if (adminPrinterSelect) adminPrinterSelect.value = name;
+    if (name) {
+        localStorage.setItem(PRINTER_STORAGE_KEY, name);
+    } else {
+        localStorage.removeItem(PRINTER_STORAGE_KEY);
+    }
 }
 
-// Populate both printer selects from /printers; keep admin select in sync with localStorage
-const adminPrinterSelect  = document.querySelector<HTMLSelectElement>('#admin-printer-select');
-const formPrinterSelect   = document.querySelector<HTMLSelectElement>('#printer-name');
+if (printerInput) {
+    const saved = localStorage.getItem(PRINTER_STORAGE_KEY);
+    if (saved) printerInput.value = saved;
+}
+
+if (adminPrinterSelect) {
+    adminPrinterSelect.addEventListener('change', () => {
+        setActivePrinter(adminPrinterSelect.value);
+    });
+}
 
 fetch('/printers')
     .then(r => r.json())
     .then(({printers}: {printers: string[]}) => {
-        const opts = printers.length
-            ? printers.map(p => `<option value="${p}">${p}</option>`).join('')
-            : '<option value="">No printers found</option>';
-
-        if (formPrinterSelect)  formPrinterSelect.innerHTML  = opts;
-
+        const saved = localStorage.getItem(PRINTER_STORAGE_KEY);
         if (adminPrinterSelect) {
-            adminPrinterSelect.innerHTML = opts;
-            const saved = getActivePrinter();
-            if (saved && printers.includes(saved)) adminPrinterSelect.value = saved;
+            const placeholder = '<option value="">Select a printer…</option>';
+            adminPrinterSelect.innerHTML = placeholder + printers.map(p => `<option value="${p}">${p}</option>`).join('');
+        }
+        if (printers.length) {
+            if (saved && printers.includes(saved)) setActivePrinter(saved);
+        } else {
+            setActivePrinter('');
         }
     })
     .catch(() => {
-        const err = '<option value="">Could not load printers</option>';
-        if (formPrinterSelect)  formPrinterSelect.innerHTML  = err;
-        if (adminPrinterSelect) adminPrinterSelect.innerHTML = err;
+        if (adminPrinterSelect) adminPrinterSelect.innerHTML = '<option value="">Could not load printers</option>';
     });
-
-adminPrinterSelect?.addEventListener('change', () => {
-    setActivePrinter(adminPrinterSelect.value);
-});
 
 const adminDialog = document.querySelector<HTMLDialogElement>('#admin-dialog');
 document.querySelector('#open-admin')?.addEventListener('click', () => adminDialog?.showModal());
@@ -68,7 +73,7 @@ if (participantLabelsButton) {
         adminDialog?.close();
         const printerName = String(
             import.meta.env.VITE_PRINTER_NAME ||
-            document.querySelector<HTMLSelectElement>('#printer-name')?.value
+            document.querySelector<HTMLInputElement>('#printer-name')?.value
         );
         showLoading();
         try {
@@ -99,7 +104,7 @@ if (printQrButton) {
         adminDialog?.close();
         const printerName = String(
             import.meta.env.VITE_PRINTER_NAME ||
-            document.querySelector<HTMLSelectElement>('#printer-name')?.value
+            document.querySelector<HTMLInputElement>('#printer-name')?.value
         );
         showLoading();
         try {
@@ -175,7 +180,7 @@ if (formElement) {
             company: String(data.companyName),
             tags: String(data.tagList).split(','),
         });
-        const printerName = import.meta.env.VITE_PRINTER_NAME || getActivePrinter() || String(data.printerName) || undefined;
+        const printerName = String(import.meta.env.VITE_PRINTER_NAME || data.printerName);
         try {
             if (import.meta.env.DEV) {
                 await new Promise(resolve => setTimeout(resolve, 800));
