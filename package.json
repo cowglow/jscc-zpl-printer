@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "vite --port 3000",
     "dev:server": "PORT=3001 node server.ts",
-    "dev:all": "PORT=3001 node server.ts & vite --port 3000",
     "build": "tsc && vite build",
     "build-github-page": "tsc && vite build --mode demo",
     "preview": "vite preview",

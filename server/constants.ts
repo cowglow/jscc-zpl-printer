@@ -10,5 +10,10 @@ export const ROUTES = {
     SERVER_INFO: '/server-info',
     PRINT_QR: '/print-qr',
     PRINTERS: '/printers',
+    STATUS: '/status',
+    PRINTER_JAM: '/printers/:id/jam',
+    PRINTER_RECOVER: '/printers/:id/recover',
+    JOB: '/jobs/:id',
     ROOT: '/',
+    STICKER: '/sticker',
 }

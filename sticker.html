@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>JSCC Sticker Printer</title>
+</head>
+<body>
+
+<a href="/">← Labels</a>
+<h1>Sticker Printer</h1>
+
+<div id="dimensions">
+    <label>Label size (dots):
+        <input type="number" id="label-width"  min="1" max="9999" value="1200"/> ×
+        <input type="number" id="label-height" min="1" max="9999" value="1800"/>
+    </label>
+</div>
+
+<div id="drop-zone">
+    <p>Drop an image here or <button type="button" id="browse-btn">browse</button></p>
+    <p><small>PNG · JPEG · GIF</small></p>
+    <input type="file" id="file-input" accept="image/png,image/jpeg,image/gif" hidden/>
+</div>
+
+<div id="preview-wrap" hidden>
+    <canvas id="label-canvas"></canvas>
+
+    <div>
+        <label for="threshold">Darkness: <output id="threshold-val">128</output></label>
+        <input type="range" id="threshold" min="1" max="254" value="128"/>
+    </div>
+
+    <div>
+        <label for="margin">Margin: <output id="margin-val">60</output> dots</label>
+        <input type="range" id="margin" min="0" max="300" value="60"/>
+    </div>
+
+    <button type="button" id="rotate-btn">Rotate ↻</button>
+    <button type="button" id="print-btn">Print</button>
+    <button type="button" id="change-btn">Change image</button>
+    <p id="status"></p>
+</div>
+
+<script type="module" src="src/client/sticker.ts"></script>
+</body>
+</html>
