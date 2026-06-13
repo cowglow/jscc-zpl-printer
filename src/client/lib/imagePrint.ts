@@ -142,7 +142,7 @@ printBtn.addEventListener('click', async () => {
             }
         }
     } catch (err) {
-        console.error(err);
+        console.error('[imagePrint] Network error:', err);
         setStatus('✗ Failed to convert or send image.');
     } finally {
         printBtn.disabled = false;

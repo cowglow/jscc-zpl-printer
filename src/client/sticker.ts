@@ -175,7 +175,7 @@ printBtn.addEventListener('click', async () => {
             }
         }
     } catch (err) {
-        console.error(err);
+        console.error('[sticker:print] Network error:', err);
         setStatus('✗ Conversion failed.');
     } finally {
         printBtn.disabled = false;

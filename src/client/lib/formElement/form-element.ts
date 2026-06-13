@@ -106,7 +106,7 @@ if (participantLabelsButton) {
                 alert(`Error: ${error.error || 'Failed to print participants'}`);
             }
         } catch (err) {
-            console.error('❌ Network error:', err);
+            console.error('[Admin:participant-labels] Network error:', err);
             alert('Network error. Could not print participants.');
         } finally {
             hideLoading();
@@ -139,7 +139,7 @@ if (printQrButton) {
                 alert(`Error: ${error.error || 'Failed to print QR code'}`);
             }
         } catch (err) {
-            console.error('❌ Network error:', err);
+            console.error('[Admin:print-qr] Network error:', err);
             alert('Network error. Could not print QR code.');
         } finally {
             hideLoading();
@@ -167,7 +167,7 @@ if (testPrinterButton) {
             const result = await response.json();
             alert(result.message);
         } catch (err) {
-            console.error('❌ Network error:', err);
+            console.error('[Admin:test-printer] Network error:', err);
             alert('Network error. Could not reach server.');
         } finally {
             hideLoading();
@@ -221,7 +221,7 @@ if (formElement) {
                 }
             }
         } catch (err) {
-            console.error('❌ Network error:', err);
+            console.error('[Print:label-form] Network error:', err);
             alert('Network error. Could not send ZPL.');
         } finally {
             hideLoading();
