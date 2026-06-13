@@ -177,13 +177,21 @@ if (testPrinterButton) {
 
 const formElement = document.querySelector<HTMLFormElement>('#form');
 const printButton = document.querySelector<HTMLButtonElement>('#-print-it');
-const nameInput = document.querySelector<HTMLInputElement>('#participant-name');
+// const name = document.querySelector<HTMLInputElement>('#participant-name');
+const givenNameInput = document.querySelector<HTMLInputElement>('#participant-given-name');
+const familyNameInput = document.querySelector<HTMLInputElement>('#participant-family-name');
 
 
-if (printButton) printButton.disabled = !nameInput?.value.trim();
+if (printButton) printButton.disabled = !givenNameInput?.value.trim();
 
-nameInput?.addEventListener('input', () => {
-    if (printButton) printButton.disabled = !nameInput.value.trim();
+givenNameInput?.addEventListener('input', () => {
+    if (printButton) printButton.disabled = !givenNameInput.value.trim();
+});
+
+if (printButton) printButton.disabled = !familyNameInput?.value.trim();
+
+familyNameInput?.addEventListener('input', () => {
+    if (printButton) printButton.disabled = !familyNameInput.value.trim();
 });
 
 if (formElement) {
@@ -195,7 +203,8 @@ if (formElement) {
         const formData = new FormData(formElement);
         const data = Object.fromEntries(formData.entries());
         const zpl = createJSCCLabel({
-            name: String(data.participantName),
+            givenName: String(data.participantGivenName),
+            familyName: String(data.participantFamilyName),
             company: String(data.companyName),
             tags: String(data.tagList).split(','),
         });
@@ -225,7 +234,8 @@ if (formElement) {
             alert('Network error. Could not send ZPL.');
         } finally {
             hideLoading();
-            printButton.disabled = !nameInput?.value.trim();
+            printButton.disabled = !givenNameInput?.value.trim();
+            printButton.disabled = !familyNameInput?.value.trim();
         }
     });
 }

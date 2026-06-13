@@ -15,7 +15,9 @@ export type Participant = {
 };
 
 export type LabelData = {
-    name: string;
+    givenName: string;
+    familyName: string;
+    // name: string;
     company: string;
     tags: string[];
 }
@@ -33,11 +35,20 @@ export async function parseParticipantJson(filePath: string): Promise<Participan
 
 export function createLabelDataFromParticipant(data: Participant): LabelData {
     return {
-        name: `${data.realName.givenName}${!data.realName?.hideFamilyNameOnWebsite ? ` ${data.realName.familyName}` : ""}`,
+        givenName: data.realName.givenName,
+        familyName: !data.realName.hideFamilyNameOnWebsite ? data.realName.familyName : "",
         company: String(data.company),
         tags: data.tags
-    }
+    };
 }
+
+// export function createLabelDataFromParticipant(data: Participant): LabelData {
+//     return {
+//         name: `${data.realName.givenName}${!data.realName?.hideFamilyNameOnWebsite ? ` ${data.realName.familyName}` : ""}`,
+//         company: String(data.company),
+//         tags: data.tags
+//     }
+// }
 
 export function sendZPLToUSBPrinter(printerName: string, zpl: string) {
     return new Promise<void>((resolve, reject) => {
