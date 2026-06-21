@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/svg+xml" href="/vite.svg"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JSCC Label Editor</title>
+  <style>
+    #editor-layout {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    #label-preview {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      cursor: default;
+      touch-action: none;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    #editor-hint {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-align: center;
+      padding: 0;
+      border: none;
+    }
+
+    nav {
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      border: none;
+      padding: 0;
+    }
+
+    nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    nav a:hover { text-decoration: underline; }
+
+    #editor-form > div {
+      width: 100%;
+      box-shadow: none;
+      background: transparent;
+      border: none;
+      padding: 0;
+      gap: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+<div id="loading-overlay" aria-hidden="true">
+  <div class="spinner"></div>
+</div>
+
+<nav>
+  <a href="/">← Label Printer</a>
+</nav>
+
+<h1>Label Editor</h1>
+
+<div id="editor-layout">
+  <canvas
+    id="label-preview"
+    aria-label="Label canvas — click a block to edit, drag to reposition"
+  ></canvas>
+
+  <p id="editor-hint">Click a block to edit &nbsp;·&nbsp; Drag to reposition</p>
+
+  <noscript>
+    <p style="color:var(--muted);font-size:0.85rem;">JavaScript is required to use the label editor.</p>
+  </noscript>
+
+  <form id="editor-form" method="post" action="/print">
+    <div>
+      <input type="hidden" id="editor-printer-name" name="printerName"/>
+      <button type="submit">Print</button>
+    </div>
+  </form>
+</div>
+
+<script type="module" src="src/client/editor.ts"></script>
+</body>
+</html>

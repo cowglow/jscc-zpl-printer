@@ -11,4 +11,5 @@ export const ROUTES = {
     PRINT_QR: '/print-qr',
     PRINTERS: '/printers',
     ROOT: '/',
+    EDITOR: '/editor',
 }

@@ -22,6 +22,9 @@ fastify.register(cors, {origin: true});
 fastify.get(ROUTES.ROOT, async (_, reply) =>
     reply.sendFile("index.html")
 );
+fastify.get(ROUTES.EDITOR, async (_, reply) =>
+    reply.sendFile("editor.html")
+);
 fastify.post(ROUTES.PARTICIPANTS, participants);
 fastify.post(ROUTES.PRINT, print);
 fastify.post(ROUTES.TEST_PRINTER, testPrinterConnection);
